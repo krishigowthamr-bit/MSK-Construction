@@ -10,7 +10,7 @@ const navItems = [
     label: 'Company',
     dropdown: [
       { label: 'About Us', href: '#about' },
-      { label: 'Why JRM', href: '#about' },
+      { label: 'Why MSK', href: '#about' },
       { label: 'Awards & Certifications', href: '#awards' },
       { label: 'Career', href: '#contact' },
       { label: 'Vendor Registration', href: '#contact' },
@@ -181,7 +181,7 @@ export default function Navbar() {
             { icon: <FaInstagram />, href: 'https://www.instagram.com/msk__construction/' },
             { icon: <FaYoutube />, href: 'https://www.youtube.com/@mskconstruction' },
             { icon: <FaLinkedinIn />, href: 'https://in.linkedin.com/company/mskconstruction' },
-            { icon: <FaFacebookF />, href: 'https://www.facebook.com/people/JRM-Construction/100089640972724/' },
+            { icon: <FaFacebookF />, href: 'https://www.facebook.com/people/MSK-Construction/100089640972724/' },
           ].map((s, i) => (
             <a key={i} href={s.href} target="_blank" rel="noopener noreferrer"
               className="text-white/35 hover:text-[#C9A84C] transition-colors duration-200 text-sm">
@@ -222,12 +222,12 @@ export default function Navbar() {
                 className="w-10 h-10 flex items-center justify-center"
                 style={{ border: '1px solid #C9A84C' }}
               >
-                <span className="font-display text-sm font-bold gold-text leading-none">JRM</span>
+                <span className="font-display text-sm font-bold gold-text leading-none">MSK</span>
               </div>
               <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-[#C9A84C]" />
             </div>
             <div className="leading-none">
-              <p className="font-display text-[17px] font-semibold tracking-wider text-white">JRM</p>
+              <p className="font-display text-[17px] font-semibold tracking-wider text-white">MSK</p>
               <p className="text-[8px] tracking-[0.22em] text-[#C9A84C] uppercase mt-0.5">CONSTRUCTION</p>
             </div>
           </div>
