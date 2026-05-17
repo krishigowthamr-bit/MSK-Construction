@@ -59,7 +59,7 @@ export default function Contact() {
               {[
                 { icon: <HiLocationMarker />, label: 'Our Office', value: '4th Floor, Cyber Towers, HITEC City, Hyderabad — 500081' },
                 { icon: <HiPhone />, label: 'Phone', value: '+91 98765 43210' },
-                { icon: <HiMail />, label: 'Email', value: 'hello@mskconstruct.in' },
+                { icon: <HiMail />, label: 'Email', value: 'hello@luxeconstruct.in' },
               ].map((item, i) => (
                 <div key={i} className="flex gap-5">
                   <div className="w-12 h-12 flex-shrink-0 border border-[#C9A84C]/30 flex items-center justify-center text-[#C9A84C] text-lg">

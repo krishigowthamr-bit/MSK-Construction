@@ -44,11 +44,10 @@ const navItems = [
   },
 ];
 
-function scrollTo(href) {
+function goTo(href) {
   document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
 }
 
-/* ── Desktop dropdown ── */
 function DropdownMenu({ items, isOpen }) {
   return (
     <AnimatePresence>
@@ -58,39 +57,14 @@ function DropdownMenu({ items, isOpen }) {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 6 }}
           transition={{ duration: 0.15 }}
-          style={{
-            position: 'absolute',
-            top: '100%',
-            left: 0,
-            marginTop: '12px',
-            width: '210px',
-            background: '#181818',
-            border: '1px solid rgba(201,168,76,0.22)',
-            boxShadow: '0 24px 60px rgba(0,0,0,0.7)',
-            zIndex: 9999,
-            borderRadius: '2px',
-            overflow: 'hidden',
-          }}
+          className="nb-dropdown"
         >
           {items.map((item, i) => (
             <a
               key={i}
               href={item.href}
-              onClick={e => { e.preventDefault(); scrollTo(item.href); }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                padding: '12px 20px',
-                fontSize: '13px',
-                color: 'rgba(255,255,255,0.6)',
-                textDecoration: 'none',
-                borderBottom: i < items.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none',
-                transition: 'color 0.2s, background 0.2s',
-                fontFamily: 'Jost, sans-serif',
-              }}
-              onMouseEnter={e => { e.currentTarget.style.color = '#C9A84C'; e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; }}
-              onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.6)'; e.currentTarget.style.background = 'transparent'; }}
+              className="nb-dropdown-item"
+              onClick={e => { e.preventDefault(); goTo(item.href); }}
             >
               {item.icon && <span>{item.icon}</span>}
               {item.label}
@@ -113,34 +87,26 @@ function NavItem({ item }) {
 
   if (!item.dropdown) {
     return (
-      <a
-        href={item.href}
-        onClick={e => { e.preventDefault(); scrollTo(item.href); }}
-        style={{ fontSize: '13px', color: 'rgba(255,255,255,0.75)', textDecoration: 'none', letterSpacing: '0.04em', fontWeight: 300, fontFamily: 'Jost, sans-serif', transition: 'color 0.2s', position: 'relative' }}
-        onMouseEnter={e => e.currentTarget.style.color = '#C9A84C'}
-        onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.75)'}
-      >{item.label}</a>
+      <a href={item.href} className="nb-link"
+        onClick={e => { e.preventDefault(); goTo(item.href); }}>
+        {item.label}
+      </a>
     );
   }
-
   return (
-    <div ref={ref} style={{ position: 'relative' }}
+    <div ref={ref} className="nb-item"
       onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
-    >
-      <button
-        onClick={() => setOpen(!open)}
-        style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: open ? '#C9A84C' : 'rgba(255,255,255,0.75)', background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '0.04em', fontWeight: 300, fontFamily: 'Jost, sans-serif', padding: 0, transition: 'color 0.2s' }}
-      >
+      onMouseLeave={() => setOpen(false)}>
+      <button className={`nb-link nb-link-btn${open ? ' nb-link-active' : ''}`}
+        onClick={() => setOpen(!open)}>
         {item.label}
-        <HiChevronDown style={{ fontSize: '12px', transition: 'transform 0.2s', transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }} />
+        <HiChevronDown className={`nb-chevron${open ? ' nb-chevron-open' : ''}`} />
       </button>
       <DropdownMenu items={item.dropdown} isOpen={open} />
     </div>
   );
 }
 
-/* ── Main Navbar ── */
 export default function Navbar() {
   const [scrollY, setScrollY] = useState(0);
   const navRef = useRef();
@@ -151,197 +117,102 @@ export default function Navbar() {
     const onScroll = () => {
       const y = window.scrollY;
       setScrollY(y);
-      // Toggle nav-scrolled class for CSS top transition (desktop only)
       if (navRef.current) {
-        if (y > 38) {
-          navRef.current.classList.add('nav-scrolled');
-        } else {
-          navRef.current.classList.remove('nav-scrolled');
-        }
+        navRef.current.classList.toggle('nb-nav-top', y > 38);
       }
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Topbar visible only on desktop (CSS hides it on mobile)
-  // Topbar slides away after 40px scroll
-  const topbarVisible = scrollY < 40;
-
-  // Nav background: transparent at very top, solid after scrolling a bit
-  const navSolid = scrollY > 20;
+  const topbarGone = scrollY > 38;
+  const navSolid   = scrollY > 20;
 
   return (
     <>
-      {/* ══════════════════════════════════
-          DESKTOP TOPBAR
-          - hidden on mobile (display:none via media query)
-          - slides up and out when scrolled
-      ══════════════════════════════════ */}
-      <div className="desktop-topbar" style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        height: '38px',
-        background: '#080808',
-        borderBottom: '1px solid rgba(255,255,255,0.07)',
-        zIndex: 60,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '0 32px',
-        fontSize: '11px',
-        transform: topbarVisible ? 'translateY(0)' : 'translateY(-100%)',
-        opacity: topbarVisible ? 1 : 0,
-        transition: 'transform 0.3s ease, opacity 0.25s ease',
-        willChange: 'transform',
-        // Hide on mobile via inline media — handled by CSS class below
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '24px', color: 'rgba(255,255,255,0.4)' }}>
-          <a href="tel:+919360959094" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'inherit', textDecoration: 'none', fontFamily: 'Jost, sans-serif' }}
-            onMouseEnter={e => e.currentTarget.style.color = '#C9A84C'}
-            onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.4)'}
-          ><HiPhone /> +91 93609 59094</a>
-          <a href="tel:+917200094121" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'inherit', textDecoration: 'none', fontFamily: 'Jost, sans-serif' }}
-            onMouseEnter={e => e.currentTarget.style.color = '#C9A84C'}
-            onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.4)'}
-          ><HiPhone /> +91 72000 94121</a>
-          <span style={{ color: 'rgba(255,255,255,0.15)' }}>|</span>
-          <span style={{ color: 'rgba(255,255,255,0.25)', letterSpacing: '0.18em', textTransform: 'uppercase', fontSize: '10px', fontFamily: 'Jost, sans-serif' }}>MON – SAT: 9AM – 7PM</span>
+      {/* TOPBAR — CSS hides on mobile, JS slides away on scroll */}
+      <div className={`nb-topbar${topbarGone ? ' nb-topbar-hidden' : ''}`}>
+        <div className="nb-topbar-left">
+          <a href="tel:+919360959094" className="nb-topbar-link"><HiPhone /> +91 93609 59094</a>
+          <a href="tel:+917200094121" className="nb-topbar-link"><HiPhone /> +91 72000 94121</a>
+          <span className="nb-topbar-sep">|</span>
+          <span className="nb-topbar-hours">MON – SAT: 9AM – 7PM</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <div className="nb-topbar-right">
           {[
-            { icon: FaInstagram, href: 'https://www.instagram.com/msk__construction/' },
-            { icon: FaYoutube, href: 'https://www.youtube.com/@mskconstruction' },
-            { icon: FaLinkedinIn, href: 'https://in.linkedin.com/company/mskconstruction' },
-            { icon: FaFacebookF, href: 'https://www.facebook.com/people/MSK-Construction/100089640972724/' },
-          ].map(({ icon: Icon, href }, i) => (
-            <a key={i} href={href} target="_blank" rel="noopener noreferrer"
-              style={{ color: 'rgba(255,255,255,0.35)', fontSize: '14px', transition: 'color 0.2s' }}
-              onMouseEnter={e => e.currentTarget.style.color = '#C9A84C'}
-              onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.35)'}
-            ><Icon /></a>
+            { I: FaInstagram, href: 'https://instagram.com/jrm__construction' },
+            { I: FaYoutube,   href: 'https://youtube.com/@jrmconstruction' },
+            { I: FaLinkedinIn,href: 'https://linkedin.com/company/jrmconstruction' },
+            { I: FaFacebookF, href: 'https://facebook.com/people/JRM-Construction/100089640972724' },
+          ].map(({ I, href }, i) => (
+            <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="nb-topbar-social"><I /></a>
           ))}
         </div>
       </div>
 
-      {/* ══════════════════════════════════
-          MAIN NAVIGATION BAR
-          Desktop: top = 38px → 0px on scroll
-          Mobile:  top = 0px ALWAYS
-      ══════════════════════════════════ */}
-      <nav style={{
-        position: 'fixed',
-        left: 0,
-        right: 0,
-        zIndex: 50,
-        background: navSolid ? 'rgba(8,8,8,0.97)' : 'rgba(10,10,10,0.75)',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
-        borderBottom: '1px solid rgba(201,168,76,0.12)',
-        transition: 'background 0.3s ease',
-        willChange: 'transform',
-      }}
-      // CSS class used to set top differently on mobile vs desktop
-      ref={navRef}
-      className="main-nav"
-      >
-        <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '14px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      {/* MAIN NAV — top controlled purely by CSS classes */}
+      <nav ref={navRef} className={`nb-nav${topbarGone ? ' nb-nav-top' : ''}${navSolid ? ' nb-nav-solid' : ''}`}>
+        <div className="nb-inner">
 
           {/* Logo */}
-          <div
-            style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', flexShrink: 0 }}
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          >
-            <div style={{ position: 'relative' }}>
-              <div style={{ width: '42px', height: '42px', border: '1px solid #C9A84C', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <span className="font-display gold-text" style={{ fontSize: '13px', fontWeight: 700, lineHeight: 1 }}>MSK</span>
-              </div>
-              <div style={{ position: 'absolute', top: '-4px', right: '-4px', width: '10px', height: '10px', background: '#C9A84C' }} />
+          <div className="nb-logo" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+            <div className="nb-logo-box">
+              <span className="nb-logo-text font-display gold-text">MSK</span>
+              <div className="nb-logo-dot" />
             </div>
-            <div style={{ lineHeight: 1 }}>
-              <p className="font-display" style={{ fontSize: '17px', fontWeight: 600, letterSpacing: '0.1em', color: '#fff', lineHeight: 1 }}>MSK</p>
-              <p style={{ fontSize: '8px', letterSpacing: '0.22em', color: '#C9A84C', textTransform: 'uppercase', marginTop: '3px', fontFamily: 'Jost, sans-serif', fontWeight: 400 }}>CONSTRUCTION</p>
+            <div className="nb-logo-name">
+              <span className="nb-logo-title font-display">MSK</span>
+              <span className="nb-logo-sub">CONSTRUCTION</span>
             </div>
           </div>
 
-          {/* Desktop nav links — hidden on mobile */}
-          <div className="desktop-nav" style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
+          {/* Desktop links — CSS shows only on lg+ */}
+          <div className="nb-links">
             {navItems.map((item, i) => <NavItem key={i} item={item} />)}
           </div>
 
-          {/* Desktop CTA — hidden on mobile */}
-          <div className="desktop-cta" style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-            <a href="tel:+919360959094"
-              style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#C9A84C', textDecoration: 'none', fontSize: '12px', letterSpacing: '0.04em', fontFamily: 'Jost, sans-serif', fontWeight: 300, transition: 'color 0.2s' }}
-              onMouseEnter={e => e.currentTarget.style.color = '#E8C97A'}
-              onMouseLeave={e => e.currentTarget.style.color = '#C9A84C'}
-            >
-              <HiPhone style={{ fontSize: '15px' }} />
-              +91 93609 59094
+          {/* Desktop CTA — CSS shows only on lg+ */}
+          <div className="nb-cta">
+            <a href="tel:+919360959094" className="nb-phone">
+              <HiPhone /> +91 93609 59094
             </a>
-            <button
-              onClick={() => scrollTo('#contact')}
-              className="btn-gold"
-              style={{ fontSize: '11px', letterSpacing: '0.14em', textTransform: 'uppercase', padding: '12px 24px' }}
-            >
+            <button className="btn-gold nb-consult" onClick={() => goTo('#contact')}>
               Free Consultation
             </button>
           </div>
 
-          {/* Mobile hamburger — visible only on mobile */}
+          {/* Hamburger — CSS shows only on mobile */}
           <button
-            className="mobile-menu-btn"
+            className="nb-hamburger"
             onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label="Toggle navigation menu"
-            style={{
-              display: 'none', // shown via CSS on mobile
-              background: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
-              padding: '8px',
-              color: '#ffffff',
-              fontSize: '26px',
-              lineHeight: 1,
-              flexShrink: 0,
-            }}
+            aria-label="Open menu"
           >
             {mobileOpen ? <HiX /> : <HiMenuAlt3 />}
           </button>
         </div>
       </nav>
 
-      {/* ══════════════════════════════════
-          MOBILE SLIDE-IN MENU
-      ══════════════════════════════════ */}
+      {/* MOBILE MENU */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
+            className="nb-mobile-menu"
             initial={{ opacity: 0, x: '100%' }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: '100%' }}
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            style={{
-              position: 'fixed',
-              inset: 0,
-              background: 'rgba(6,6,6,0.99)',
-              zIndex: 48,
-              overflowY: 'auto',
-              paddingTop: '72px',
-            }}
           >
-            <div style={{ padding: '16px 24px 80px' }}>
+            <div className="nb-mobile-inner">
               {navItems.map((item, i) => (
-                <div key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
+                <div key={i} className="nb-mobile-row">
                   {item.dropdown ? (
                     <>
                       <button
+                        className="nb-mobile-btn"
                         onClick={() => setMobileExpanded(mobileExpanded === i ? null : i)}
-                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '16px 0', background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.8)', fontSize: '15px', fontWeight: 300, letterSpacing: '0.04em', fontFamily: 'Jost, sans-serif', textAlign: 'left' }}
                       >
                         {item.label}
-                        <HiChevronDown style={{ color: '#C9A84C', fontSize: '16px', transition: 'transform 0.2s', transform: mobileExpanded === i ? 'rotate(180deg)' : 'rotate(0deg)', flexShrink: 0 }} />
+                        <HiChevronDown className={`nb-chevron${mobileExpanded === i ? ' nb-chevron-open' : ''}`} />
                       </button>
                       <AnimatePresence>
                         {mobileExpanded === i && (
@@ -350,15 +221,11 @@ export default function Navbar() {
                             animate={{ height: 'auto', opacity: 1 }}
                             exit={{ height: 0, opacity: 0 }}
                             transition={{ duration: 0.2 }}
-                            style={{ overflow: 'hidden', paddingLeft: '16px', paddingBottom: '8px' }}
+                            className="nb-mobile-sub"
                           >
                             {item.dropdown.map((sub, j) => (
-                              <a key={j} href={sub.href}
-                                onClick={e => { e.preventDefault(); scrollTo(sub.href); setMobileOpen(false); }}
-                                style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 0', fontSize: '13px', color: 'rgba(255,255,255,0.45)', textDecoration: 'none', fontFamily: 'Jost, sans-serif', transition: 'color 0.2s' }}
-                                onMouseEnter={e => e.currentTarget.style.color = '#C9A84C'}
-                                onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.45)'}
-                              >
+                              <a key={j} href={sub.href} className="nb-mobile-sub-link"
+                                onClick={e => { e.preventDefault(); goTo(sub.href); setMobileOpen(false); }}>
                                 {sub.icon && <span>{sub.icon}</span>}
                                 {sub.label}
                               </a>
@@ -368,78 +235,36 @@ export default function Navbar() {
                       </AnimatePresence>
                     </>
                   ) : (
-                    <a href={item.href}
-                      onClick={e => { e.preventDefault(); scrollTo(item.href); setMobileOpen(false); }}
-                      style={{ display: 'block', padding: '16px 0', color: 'rgba(255,255,255,0.8)', textDecoration: 'none', fontSize: '15px', fontWeight: 300, letterSpacing: '0.04em', fontFamily: 'Jost, sans-serif' }}
-                    >
+                    <a href={item.href} className="nb-mobile-link"
+                      onClick={e => { e.preventDefault(); goTo(item.href); setMobileOpen(false); }}>
                       {item.label}
                     </a>
                   )}
                 </div>
               ))}
 
-              <div style={{ marginTop: '32px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                <a href="tel:+919360959094"
-                  style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#C9A84C', textDecoration: 'none', fontSize: '15px', fontFamily: 'Jost, sans-serif' }}
-                >
-                  <HiPhone /> +91 93609 59094
-                </a>
-                <button
-                  onClick={() => { scrollTo('#contact'); setMobileOpen(false); }}
-                  className="btn-gold"
-                  style={{ width: '100%', padding: '16px', fontSize: '13px', letterSpacing: '0.15em', textTransform: 'uppercase' }}
-                >
+              <div className="nb-mobile-footer">
+                <a href="tel:+919360959094" className="nb-mobile-phone"><HiPhone /> +91 93609 59094</a>
+                <button className="btn-gold nb-mobile-consult"
+                  onClick={() => { goTo('#contact'); setMobileOpen(false); }}>
                   Get Free Consultation
                 </button>
-              </div>
-
-              <div style={{ display: 'flex', gap: '20px', marginTop: '32px' }}>
-                {[FaInstagram, FaYoutube, FaLinkedinIn, FaFacebookF].map((Icon, i) => (
-                  <a key={i} href="#"
-                    style={{ color: 'rgba(255,255,255,0.3)', fontSize: '20px', transition: 'color 0.2s' }}
-                    onMouseEnter={e => e.currentTarget.style.color = '#C9A84C'}
-                    onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.3)'}
-                  ><Icon /></a>
-                ))}
+                <div className="nb-mobile-socials">
+                  {[FaInstagram, FaYoutube, FaLinkedinIn, FaFacebookF].map((I, i) => (
+                    <a key={i} href="#" className="nb-mobile-social"><I /></a>
+                  ))}
+                </div>
               </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* ══════════════════════════════════
-          WHATSAPP FLOAT BUTTON
-      ══════════════════════════════════ */}
-      <a
-        href="https://wa.me/919360959094"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Chat on WhatsApp"
-        style={{
-          position: 'fixed',
-          bottom: 'calc(20px + env(safe-area-inset-bottom, 0px))',
-          right: 'calc(20px + env(safe-area-inset-right, 0px))',
-          zIndex: 55,
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          padding: '11px 18px',
-          borderRadius: '50px',
-          background: '#25D366',
-          color: '#fff',
-          fontSize: '13px',
-          fontWeight: 600,
-          textDecoration: 'none',
-          boxShadow: '0 4px 20px rgba(37,211,102,0.5)',
-          fontFamily: 'Jost, sans-serif',
-          transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-          maxWidth: 'calc(100vw - 40px)',
-        }}
-        onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; e.currentTarget.style.boxShadow = '0 6px 28px rgba(37,211,102,0.65)'; }}
-        onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(37,211,102,0.5)'; }}
-      >
-        <FaWhatsapp style={{ fontSize: '20px', flexShrink: 0 }} />
-        <span className="wa-label">Chat with us</span>
+      {/* WHATSAPP */}
+      <a href="https://wa.me/919360959094" target="_blank" rel="noopener noreferrer"
+        className="nb-whatsapp" aria-label="WhatsApp">
+        <FaWhatsapp className="nb-wa-icon" />
+        <span className="nb-wa-label">Chat with us</span>
       </a>
     </>
   );

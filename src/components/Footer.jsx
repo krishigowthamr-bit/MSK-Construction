@@ -23,7 +23,7 @@ export default function Footer() {
                 <div className="absolute -top-1 -right-1 w-3 h-3 bg-[#C9A84C]" />
               </div>
               <div>
-                <p className="font-display text-xl font-semibold tracking-wide text-white leading-none">MSK</p>
+                <p className="font-display text-xl font-semibold tracking-wide text-white leading-none">LUXE</p>
                 <p className="text-[9px] tracking-[0.25em] text-[#C9A84C] uppercase leading-none mt-0.5">CONSTRUCT</p>
               </div>
             </div>
@@ -73,7 +73,7 @@ export default function Footer() {
               </div>
               <div>
                 <p className="text-[10px] text-white/25 uppercase tracking-widest mb-1">Email</p>
-                <p className="text-[#C9A84C]/70 text-[13px] font-light">hello@mskconstruct.in</p>
+                <p className="text-[#C9A84C]/70 text-[13px] font-light">hello@luxeconstruct.in</p>
               </div>
               <div>
                 <p className="text-[10px] text-white/25 uppercase tracking-widest mb-1">Hours</p>
