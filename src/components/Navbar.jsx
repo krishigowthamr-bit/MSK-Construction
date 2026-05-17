@@ -108,19 +108,26 @@ function NavItem({ item }) {
 }
 
 export default function Navbar() {
-  const [scrollY, setScrollY] = useState(0);
+  // ✅ Initialize directly from window.scrollY so first render is already correct
+  const [scrollY, setScrollY] = useState(() =>
+    typeof window !== 'undefined' ? window.scrollY : 0
+  );
   const navRef = useRef();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileExpanded, setMobileExpanded] = useState(null);
 
   useEffect(() => {
-    const onScroll = () => {
-      const y = window.scrollY;
+    const sync = (y) => {
       setScrollY(y);
       if (navRef.current) {
         navRef.current.classList.toggle('nb-nav-top', y > 38);
       }
     };
+
+    // ✅ Run immediately on mount so classes are set before first paint
+    sync(window.scrollY);
+
+    const onScroll = () => sync(window.scrollY);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);

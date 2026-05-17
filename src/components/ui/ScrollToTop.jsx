@@ -3,12 +3,17 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { HiArrowUp } from 'react-icons/hi';
 
 export default function ScrollToTop() {
-  const [visible, setVisible] = useState(false);
+  // ✅ Initialize from actual scroll position — not hardcoded false
+  const [visible, setVisible] = useState(() =>
+    typeof window !== 'undefined' ? window.scrollY > 400 : false
+  );
 
   useEffect(() => {
-    const onScroll = () => setVisible(window.scrollY > 400);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    const sync = () => setVisible(window.scrollY > 400);
+    // ✅ Run immediately on mount
+    sync();
+    window.addEventListener('scroll', sync, { passive: true });
+    return () => window.removeEventListener('scroll', sync);
   }, []);
 
   return (
@@ -23,9 +28,8 @@ export default function ScrollToTop() {
           aria-label="Scroll to top"
           style={{
             position: 'fixed',
-            // Sits directly above the WhatsApp button (which is at bottom ~24px + ~46px height = ~70px from bottom)
             bottom: 'calc(86px + env(safe-area-inset-bottom, 0px))',
-            right: 'calc(16px + env(safe-area-inset-right, 0px))',
+            right: 'calc(20px + env(safe-area-inset-right, 0px))',
             zIndex: 55,
             width: '44px',
             height: '44px',
@@ -40,7 +44,7 @@ export default function ScrollToTop() {
             cursor: 'pointer',
             boxShadow: '0 4px 16px rgba(201,168,76,0.45)',
           }}
-          whileHover={{ scale: 1.08, boxShadow: '0 6px 24px rgba(201,168,76,0.65)' }}
+          whileHover={{ scale: 1.08 }}
           whileTap={{ scale: 0.93 }}
         >
           <HiArrowUp />
