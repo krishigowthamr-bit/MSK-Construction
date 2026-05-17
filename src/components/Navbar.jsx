@@ -212,10 +212,10 @@ export default function Navbar() {
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           {[
-            { icon: FaInstagram, href: 'https://www.instagram.com/jrm__construction/' },
-            { icon: FaYoutube, href: 'https://www.youtube.com/@jrmconstruction' },
-            { icon: FaLinkedinIn, href: 'https://in.linkedin.com/company/jrmconstruction' },
-            { icon: FaFacebookF, href: 'https://www.facebook.com/people/JRM-Construction/100089640972724/' },
+            { icon: FaInstagram, href: 'https://www.instagram.com/msk__construction/' },
+            { icon: FaYoutube, href: 'https://www.youtube.com/@mskconstruction' },
+            { icon: FaLinkedinIn, href: 'https://in.linkedin.com/company/mskconstruction' },
+            { icon: FaFacebookF, href: 'https://www.facebook.com/people/MSK-Construction/100089640972724/' },
           ].map(({ icon: Icon, href }, i) => (
             <a key={i} href={href} target="_blank" rel="noopener noreferrer"
               style={{ color: 'rgba(255,255,255,0.35)', fontSize: '14px', transition: 'color 0.2s' }}
