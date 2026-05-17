@@ -3,8 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { HiMenuAlt3, HiX, HiChevronDown, HiPhone } from 'react-icons/hi';
 import { FaWhatsapp, FaInstagram, FaYoutube, FaLinkedinIn, FaFacebookF } from 'react-icons/fa';
 
-const TOPBAR_HEIGHT = 36; // px — keep in sync with top: TOPBAR_HEIGHT on main nav
-
 const navItems = [
   {
     label: 'Company',
@@ -46,35 +44,55 @@ const navItems = [
   },
 ];
 
+function scrollTo(href) {
+  document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
+}
+
+/* ── Desktop dropdown ── */
 function DropdownMenu({ items, isOpen }) {
   return (
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          initial={{ opacity: 0, y: 8, scale: 0.97 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 6, scale: 0.97 }}
-          transition={{ duration: 0.16, ease: [0.22, 1, 0.36, 1] }}
-          className="absolute top-full left-0 mt-3 w-52 rounded-sm overflow-hidden"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 6 }}
+          transition={{ duration: 0.15 }}
           style={{
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            marginTop: '12px',
+            width: '210px',
             background: '#181818',
             border: '1px solid rgba(201,168,76,0.22)',
             boxShadow: '0 24px 60px rgba(0,0,0,0.7)',
             zIndex: 9999,
+            borderRadius: '2px',
+            overflow: 'hidden',
           }}
         >
           {items.map((item, i) => (
             <a
               key={i}
               href={item.href}
-              onClick={e => {
-                e.preventDefault();
-                const el = document.querySelector(item.href);
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              onClick={e => { e.preventDefault(); scrollTo(item.href); }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                padding: '12px 20px',
+                fontSize: '13px',
+                color: 'rgba(255,255,255,0.6)',
+                textDecoration: 'none',
+                borderBottom: i < items.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none',
+                transition: 'color 0.2s, background 0.2s',
+                fontFamily: 'Jost, sans-serif',
               }}
-              className="flex items-center gap-3 px-5 py-3 text-[13px] text-white/60 hover:text-[#C9A84C] hover:bg-white/5 transition-all duration-200 border-b border-white/5 last:border-0"
+              onMouseEnter={e => { e.currentTarget.style.color = '#C9A84C'; e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; }}
+              onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.6)'; e.currentTarget.style.background = 'transparent'; }}
             >
-              {item.icon && <span className="text-sm">{item.icon}</span>}
+              {item.icon && <span>{item.icon}</span>}
               {item.label}
             </a>
           ))}
@@ -87,209 +105,243 @@ function DropdownMenu({ items, isOpen }) {
 function NavItem({ item }) {
   const [open, setOpen] = useState(false);
   const ref = useRef();
-
   useEffect(() => {
-    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
+    const h = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener('mousedown', h);
+    return () => document.removeEventListener('mousedown', h);
   }, []);
 
   if (!item.dropdown) {
     return (
       <a
         href={item.href}
-        onClick={e => {
-          e.preventDefault();
-          const el = document.querySelector(item.href);
-          if (el) el.scrollIntoView({ behavior: 'smooth' });
-        }}
-        className="text-[13px] tracking-wide text-white/75 hover:text-[#C9A84C] transition-colors duration-200 font-light relative group"
-      >
-        {item.label}
-        <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-[#C9A84C] group-hover:w-full transition-all duration-300" />
-      </a>
+        onClick={e => { e.preventDefault(); scrollTo(item.href); }}
+        style={{ fontSize: '13px', color: 'rgba(255,255,255,0.75)', textDecoration: 'none', letterSpacing: '0.04em', fontWeight: 300, fontFamily: 'Jost, sans-serif', transition: 'color 0.2s', position: 'relative' }}
+        onMouseEnter={e => e.currentTarget.style.color = '#C9A84C'}
+        onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.75)'}
+      >{item.label}</a>
     );
   }
 
   return (
-    <div
-      ref={ref}
-      className="relative"
+    <div ref={ref} style={{ position: 'relative' }}
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
     >
       <button
-        className="flex items-center gap-1.5 text-[13px] tracking-wide text-white/75 hover:text-[#C9A84C] transition-colors duration-200 font-light"
         onClick={() => setOpen(!open)}
+        style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: open ? '#C9A84C' : 'rgba(255,255,255,0.75)', background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '0.04em', fontWeight: 300, fontFamily: 'Jost, sans-serif', padding: 0, transition: 'color 0.2s' }}
       >
         {item.label}
-        <HiChevronDown
-          className="text-xs transition-transform duration-200"
-          style={{ transform: open ? 'rotate(180deg)' : 'rotate(0)' }}
-        />
+        <HiChevronDown style={{ fontSize: '12px', transition: 'transform 0.2s', transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }} />
       </button>
       <DropdownMenu items={item.dropdown} isOpen={open} />
     </div>
   );
 }
 
+/* ── Main Navbar ── */
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
+  const navRef = useRef();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileExpanded, setMobileExpanded] = useState(null);
 
   useEffect(() => {
-    // Hide topbar + collapse nav when scrolled past topbar height
-    const onScroll = () => setScrolled(window.scrollY > TOPBAR_HEIGHT);
-    window.addEventListener('scroll', onScroll);
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrollY(y);
+      // Toggle nav-scrolled class for CSS top transition (desktop only)
+      if (navRef.current) {
+        if (y > 38) {
+          navRef.current.classList.add('nav-scrolled');
+        } else {
+          navRef.current.classList.remove('nav-scrolled');
+        }
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const scrollTo = (href) => {
-    const el = document.querySelector(href);
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
-  };
+  // Topbar visible only on desktop (CSS hides it on mobile)
+  // Topbar slides away after 40px scroll
+  const topbarVisible = scrollY < 40;
+
+  // Nav background: transparent at very top, solid after scrolling a bit
+  const navSolid = scrollY > 20;
 
   return (
     <>
-      {/* ── TOP BAR (z-50, always behind nothing) ── */}
-      <div
-        className="hidden lg:flex fixed top-0 left-0 right-0 items-center justify-between px-8 text-[11px] transition-all duration-300"
-        style={{
-          height: `${TOPBAR_HEIGHT}px`,
-          background: '#0a0a0a',
-          borderBottom: '1px solid rgba(255,255,255,0.07)',
-          zIndex: 60,               // higher than main nav
-          opacity: scrolled ? 0 : 1,
-          pointerEvents: scrolled ? 'none' : 'auto',
-          transform: scrolled ? 'translateY(-100%)' : 'translateY(0)',
-          transition: 'opacity 0.3s, transform 0.3s',
-        }}
-      >
-        <div className="flex items-center gap-6 text-white/40">
-          <a href="tel:+919360959094" className="flex items-center gap-1.5 hover:text-[#C9A84C] transition-colors">
-            <HiPhone /> +91 93609 59094
-          </a>
-          <a href="tel:+917200094121" className="flex items-center gap-1.5 hover:text-[#C9A84C] transition-colors">
-            <HiPhone /> +91 72000 94121
-          </a>
-          <span className="text-white/20">|</span>
-          <span className="text-white/30 tracking-[0.18em] uppercase text-[10px]">MON – SAT: 9AM – 7PM</span>
+      {/* ══════════════════════════════════
+          DESKTOP TOPBAR
+          - hidden on mobile (display:none via media query)
+          - slides up and out when scrolled
+      ══════════════════════════════════ */}
+      <div className="desktop-topbar" style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        height: '38px',
+        background: '#080808',
+        borderBottom: '1px solid rgba(255,255,255,0.07)',
+        zIndex: 60,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '0 32px',
+        fontSize: '11px',
+        transform: topbarVisible ? 'translateY(0)' : 'translateY(-100%)',
+        opacity: topbarVisible ? 1 : 0,
+        transition: 'transform 0.3s ease, opacity 0.25s ease',
+        willChange: 'transform',
+        // Hide on mobile via inline media — handled by CSS class below
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '24px', color: 'rgba(255,255,255,0.4)' }}>
+          <a href="tel:+919360959094" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'inherit', textDecoration: 'none', fontFamily: 'Jost, sans-serif' }}
+            onMouseEnter={e => e.currentTarget.style.color = '#C9A84C'}
+            onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.4)'}
+          ><HiPhone /> +91 93609 59094</a>
+          <a href="tel:+917200094121" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'inherit', textDecoration: 'none', fontFamily: 'Jost, sans-serif' }}
+            onMouseEnter={e => e.currentTarget.style.color = '#C9A84C'}
+            onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.4)'}
+          ><HiPhone /> +91 72000 94121</a>
+          <span style={{ color: 'rgba(255,255,255,0.15)' }}>|</span>
+          <span style={{ color: 'rgba(255,255,255,0.25)', letterSpacing: '0.18em', textTransform: 'uppercase', fontSize: '10px', fontFamily: 'Jost, sans-serif' }}>MON – SAT: 9AM – 7PM</span>
         </div>
-        <div className="flex items-center gap-4">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           {[
-            { icon: <FaInstagram />, href: 'https://www.instagram.com/msk__construction/' },
-            { icon: <FaYoutube />, href: 'https://www.youtube.com/@mskconstruction' },
-            { icon: <FaLinkedinIn />, href: 'https://in.linkedin.com/company/mskconstruction' },
-            { icon: <FaFacebookF />, href: 'https://www.facebook.com/people/MSK-Construction/100089640972724/' },
-          ].map((s, i) => (
-            <a key={i} href={s.href} target="_blank" rel="noopener noreferrer"
-              className="text-white/35 hover:text-[#C9A84C] transition-colors duration-200 text-sm">
-              {s.icon}
-            </a>
+            { icon: FaInstagram, href: 'https://www.instagram.com/jrm__construction/' },
+            { icon: FaYoutube, href: 'https://www.youtube.com/@jrmconstruction' },
+            { icon: FaLinkedinIn, href: 'https://in.linkedin.com/company/jrmconstruction' },
+            { icon: FaFacebookF, href: 'https://www.facebook.com/people/JRM-Construction/100089640972724/' },
+          ].map(({ icon: Icon, href }, i) => (
+            <a key={i} href={href} target="_blank" rel="noopener noreferrer"
+              style={{ color: 'rgba(255,255,255,0.35)', fontSize: '14px', transition: 'color 0.2s' }}
+              onMouseEnter={e => e.currentTarget.style.color = '#C9A84C'}
+              onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.35)'}
+            ><Icon /></a>
           ))}
         </div>
       </div>
 
-      {/* ── MAIN NAV (z-40, sits below topbar, slides up on scroll) ── */}
-      <motion.nav
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.4 }}
-        className="fixed left-0 right-0 transition-all duration-300"
-        style={{
-          // When not scrolled: sits just below the 36px topbar
-          // When scrolled: snaps to top-0 (topbar hidden via transform)
-          top: scrolled ? 0 : `${TOPBAR_HEIGHT}px`,
-          zIndex: 50,
-          background: scrolled ? 'rgba(8,8,8,0.98)' : 'rgba(10,10,10,0.85)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          borderBottom: '1px solid rgba(201,168,76,0.13)',
-          padding: scrolled ? '12px 0' : '16px 0',
-          transition: 'top 0.3s ease, padding 0.3s ease, background 0.3s ease',
-        }}
+      {/* ══════════════════════════════════
+          MAIN NAVIGATION BAR
+          Desktop: top = 38px → 0px on scroll
+          Mobile:  top = 0px ALWAYS
+      ══════════════════════════════════ */}
+      <nav style={{
+        position: 'fixed',
+        left: 0,
+        right: 0,
+        zIndex: 50,
+        background: navSolid ? 'rgba(8,8,8,0.97)' : 'rgba(10,10,10,0.75)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        borderBottom: '1px solid rgba(201,168,76,0.12)',
+        transition: 'background 0.3s ease',
+        willChange: 'transform',
+      }}
+      // CSS class used to set top differently on mobile vs desktop
+      ref={navRef}
+      className="main-nav"
       >
-        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+        <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '14px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
 
           {/* Logo */}
           <div
-            className="flex items-center gap-3 cursor-pointer flex-shrink-0"
+            style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', flexShrink: 0 }}
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           >
-            <div className="relative">
-              <div
-                className="w-10 h-10 flex items-center justify-center"
-                style={{ border: '1px solid #C9A84C' }}
-              >
-                <span className="font-display text-sm font-bold gold-text leading-none">MSK</span>
+            <div style={{ position: 'relative' }}>
+              <div style={{ width: '42px', height: '42px', border: '1px solid #C9A84C', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span className="font-display gold-text" style={{ fontSize: '13px', fontWeight: 700, lineHeight: 1 }}>MSK</span>
               </div>
-              <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-[#C9A84C]" />
+              <div style={{ position: 'absolute', top: '-4px', right: '-4px', width: '10px', height: '10px', background: '#C9A84C' }} />
             </div>
-            <div className="leading-none">
-              <p className="font-display text-[17px] font-semibold tracking-wider text-white">MSK</p>
-              <p className="text-[8px] tracking-[0.22em] text-[#C9A84C] uppercase mt-0.5">CONSTRUCTION</p>
+            <div style={{ lineHeight: 1 }}>
+              <p className="font-display" style={{ fontSize: '17px', fontWeight: 600, letterSpacing: '0.1em', color: '#fff', lineHeight: 1 }}>MSK</p>
+              <p style={{ fontSize: '8px', letterSpacing: '0.22em', color: '#C9A84C', textTransform: 'uppercase', marginTop: '3px', fontFamily: 'Jost, sans-serif', fontWeight: 400 }}>CONSTRUCTION</p>
             </div>
           </div>
 
-          {/* Desktop nav links */}
-          <div className="hidden lg:flex items-center gap-8">
+          {/* Desktop nav links — hidden on mobile */}
+          <div className="desktop-nav" style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
             {navItems.map((item, i) => <NavItem key={i} item={item} />)}
           </div>
 
-          {/* Right side: phone + CTA */}
-          <div className="hidden lg:flex items-center gap-5">
-            <a
-              href="tel:+919360959094"
-              className="flex items-center gap-2 text-[#C9A84C] hover:text-[#E8C97A] transition-colors"
+          {/* Desktop CTA — hidden on mobile */}
+          <div className="desktop-cta" style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+            <a href="tel:+919360959094"
+              style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#C9A84C', textDecoration: 'none', fontSize: '12px', letterSpacing: '0.04em', fontFamily: 'Jost, sans-serif', fontWeight: 300, transition: 'color 0.2s' }}
+              onMouseEnter={e => e.currentTarget.style.color = '#E8C97A'}
+              onMouseLeave={e => e.currentTarget.style.color = '#C9A84C'}
             >
-              <HiPhone className="text-base" />
-              <span className="text-[12px] tracking-wide font-light">+91 93609 59094</span>
+              <HiPhone style={{ fontSize: '15px' }} />
+              +91 93609 59094
             </a>
             <button
               onClick={() => scrollTo('#contact')}
-              className="btn-gold text-[11px] tracking-[0.14em] uppercase px-6 py-3"
+              className="btn-gold"
+              style={{ fontSize: '11px', letterSpacing: '0.14em', textTransform: 'uppercase', padding: '12px 24px' }}
             >
               Free Consultation
             </button>
           </div>
 
-          {/* Mobile hamburger */}
+          {/* Mobile hamburger — visible only on mobile */}
           <button
-            className="lg:hidden text-white text-2xl p-1 ml-auto"
+            className="mobile-menu-btn"
             onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label="Toggle menu"
+            aria-label="Toggle navigation menu"
+            style={{
+              display: 'none', // shown via CSS on mobile
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              padding: '8px',
+              color: '#ffffff',
+              fontSize: '26px',
+              lineHeight: 1,
+              flexShrink: 0,
+            }}
           >
             {mobileOpen ? <HiX /> : <HiMenuAlt3 />}
           </button>
         </div>
-      </motion.nav>
+      </nav>
 
-      {/* ── MOBILE MENU ── */}
+      {/* ══════════════════════════════════
+          MOBILE SLIDE-IN MENU
+      ══════════════════════════════════ */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
             initial={{ opacity: 0, x: '100%' }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: '100%' }}
-            transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-0 overflow-y-auto"
-            style={{ background: 'rgba(8,8,8,0.99)', paddingTop: '75px', zIndex: 45 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              background: 'rgba(6,6,6,0.99)',
+              zIndex: 48,
+              overflowY: 'auto',
+              paddingTop: '72px',
+            }}
           >
-            <div className="px-6 py-6">
+            <div style={{ padding: '16px 24px 80px' }}>
               {navItems.map((item, i) => (
                 <div key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
                   {item.dropdown ? (
                     <>
                       <button
-                        className="flex items-center justify-between w-full py-4 text-white/80 text-[15px] font-light tracking-wide"
                         onClick={() => setMobileExpanded(mobileExpanded === i ? null : i)}
+                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '16px 0', background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.8)', fontSize: '15px', fontWeight: 300, letterSpacing: '0.04em', fontFamily: 'Jost, sans-serif', textAlign: 'left' }}
                       >
                         {item.label}
-                        <HiChevronDown
-                          className="transition-transform duration-200 text-[#C9A84C]"
-                          style={{ transform: mobileExpanded === i ? 'rotate(180deg)' : 'rotate(0)' }}
-                        />
+                        <HiChevronDown style={{ color: '#C9A84C', fontSize: '16px', transition: 'transform 0.2s', transform: mobileExpanded === i ? 'rotate(180deg)' : 'rotate(0deg)', flexShrink: 0 }} />
                       </button>
                       <AnimatePresence>
                         {mobileExpanded === i && (
@@ -298,18 +350,14 @@ export default function Navbar() {
                             animate={{ height: 'auto', opacity: 1 }}
                             exit={{ height: 0, opacity: 0 }}
                             transition={{ duration: 0.2 }}
-                            className="overflow-hidden pl-4 pb-2"
+                            style={{ overflow: 'hidden', paddingLeft: '16px', paddingBottom: '8px' }}
                           >
                             {item.dropdown.map((sub, j) => (
-                              <a
-                                key={j}
-                                href={sub.href}
-                                onClick={e => {
-                                  e.preventDefault();
-                                  scrollTo(sub.href);
-                                  setMobileOpen(false);
-                                }}
-                                className="flex items-center gap-2 py-2.5 text-[13px] text-white/45 hover:text-[#C9A84C] transition-colors"
+                              <a key={j} href={sub.href}
+                                onClick={e => { e.preventDefault(); scrollTo(sub.href); setMobileOpen(false); }}
+                                style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 0', fontSize: '13px', color: 'rgba(255,255,255,0.45)', textDecoration: 'none', fontFamily: 'Jost, sans-serif', transition: 'color 0.2s' }}
+                                onMouseEnter={e => e.currentTarget.style.color = '#C9A84C'}
+                                onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.45)'}
                               >
                                 {sub.icon && <span>{sub.icon}</span>}
                                 {sub.label}
@@ -320,14 +368,9 @@ export default function Navbar() {
                       </AnimatePresence>
                     </>
                   ) : (
-                    <a
-                      href={item.href}
-                      onClick={e => {
-                        e.preventDefault();
-                        scrollTo(item.href);
-                        setMobileOpen(false);
-                      }}
-                      className="block py-4 text-white/80 text-[15px] font-light tracking-wide"
+                    <a href={item.href}
+                      onClick={e => { e.preventDefault(); scrollTo(item.href); setMobileOpen(false); }}
+                      style={{ display: 'block', padding: '16px 0', color: 'rgba(255,255,255,0.8)', textDecoration: 'none', fontSize: '15px', fontWeight: 300, letterSpacing: '0.04em', fontFamily: 'Jost, sans-serif' }}
                     >
                       {item.label}
                     </a>
@@ -335,26 +378,28 @@ export default function Navbar() {
                 </div>
               ))}
 
-              <div className="mt-8 space-y-4">
-                <a
-                  href="tel:+919360959094"
-                  className="flex items-center gap-3 text-[#C9A84C] text-[15px]"
+              <div style={{ marginTop: '32px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <a href="tel:+919360959094"
+                  style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#C9A84C', textDecoration: 'none', fontSize: '15px', fontFamily: 'Jost, sans-serif' }}
                 >
                   <HiPhone /> +91 93609 59094
                 </a>
                 <button
                   onClick={() => { scrollTo('#contact'); setMobileOpen(false); }}
-                  className="btn-gold text-sm tracking-widest uppercase py-4 w-full"
+                  className="btn-gold"
+                  style={{ width: '100%', padding: '16px', fontSize: '13px', letterSpacing: '0.15em', textTransform: 'uppercase' }}
                 >
                   Get Free Consultation
                 </button>
               </div>
 
-              <div className="flex gap-5 mt-8 pb-8">
+              <div style={{ display: 'flex', gap: '20px', marginTop: '32px' }}>
                 {[FaInstagram, FaYoutube, FaLinkedinIn, FaFacebookF].map((Icon, i) => (
-                  <a key={i} href="#" className="text-white/30 text-xl hover:text-[#C9A84C] transition-colors">
-                    <Icon />
-                  </a>
+                  <a key={i} href="#"
+                    style={{ color: 'rgba(255,255,255,0.3)', fontSize: '20px', transition: 'color 0.2s' }}
+                    onMouseEnter={e => e.currentTarget.style.color = '#C9A84C'}
+                    onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.3)'}
+                  ><Icon /></a>
                 ))}
               </div>
             </div>
@@ -362,36 +407,39 @@ export default function Navbar() {
         )}
       </AnimatePresence>
 
-      {/* ── WHATSAPP FLOAT (bottom-right, fixed position) ── */}
+      {/* ══════════════════════════════════
+          WHATSAPP FLOAT BUTTON
+      ══════════════════════════════════ */}
       <a
         href="https://wa.me/919360959094"
         target="_blank"
         rel="noopener noreferrer"
-        title="Chat on WhatsApp"
+        aria-label="Chat on WhatsApp"
         style={{
           position: 'fixed',
-          bottom: '24px',
-          right: '24px',
+          bottom: 'calc(20px + env(safe-area-inset-bottom, 0px))',
+          right: 'calc(20px + env(safe-area-inset-right, 0px))',
           zIndex: 55,
           display: 'flex',
           alignItems: 'center',
           gap: '8px',
-          padding: '10px 18px',
+          padding: '11px 18px',
           borderRadius: '50px',
           background: '#25D366',
           color: '#fff',
           fontSize: '13px',
-          fontWeight: 500,
+          fontWeight: 600,
           textDecoration: 'none',
-          boxShadow: '0 4px 24px rgba(37,211,102,0.45)',
-          transition: 'transform 0.2s, box-shadow 0.2s',
+          boxShadow: '0 4px 20px rgba(37,211,102,0.5)',
           fontFamily: 'Jost, sans-serif',
+          transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+          maxWidth: 'calc(100vw - 40px)',
         }}
-        onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; e.currentTarget.style.boxShadow = '0 6px 30px rgba(37,211,102,0.6)'; }}
-        onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 4px 24px rgba(37,211,102,0.45)'; }}
+        onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; e.currentTarget.style.boxShadow = '0 6px 28px rgba(37,211,102,0.65)'; }}
+        onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(37,211,102,0.5)'; }}
       >
-        <FaWhatsapp style={{ fontSize: '20px' }} />
-        <span className="hidden sm:inline">Chat with us</span>
+        <FaWhatsapp style={{ fontSize: '20px', flexShrink: 0 }} />
+        <span className="wa-label">Chat with us</span>
       </a>
     </>
   );

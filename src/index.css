@@ -108,3 +108,42 @@ body { font-family: 'Jost', sans-serif; background-color: #0F0F0F; color: #fff; 
 
 .swiper-pagination-bullet { background: rgba(201,168,76,0.3) !important; width: 8px !important; height: 8px !important; }
 .swiper-pagination-bullet-active { background: #C9A84C !important; width: 28px !important; border-radius: 4px !important; }
+
+/* ═══════════════════════════════════════════
+   NAVBAR RESPONSIVE — mobile first
+   Mobile (<1024px): topbar hidden, hamburger shown, desktop nav/cta hidden
+   Desktop (≥1024px): topbar shown, hamburger hidden, desktop nav/cta shown
+═══════════════════════════════════════════ */
+
+/* Mobile defaults */
+.desktop-topbar { display: none !important; }
+.desktop-nav    { display: none !important; }
+.desktop-cta    { display: none !important; }
+.mobile-menu-btn { display: flex !important; }
+
+/* Nav sits at top:0 on mobile — no topbar above it */
+.main-nav { top: 0 !important; }
+
+/* WhatsApp "Chat with us" label — hidden on small phones */
+.wa-label { display: none; }
+
+/* Desktop (≥1024px) */
+@media (min-width: 1024px) {
+  .desktop-topbar { display: flex !important; }
+  .desktop-nav    { display: flex !important; }
+  .desktop-cta    { display: flex !important; }
+  .mobile-menu-btn { display: none !important; }
+  /* Nav sits 38px down on desktop by default */
+  .main-nav { top: 38px !important; }
+  .wa-label { display: inline !important; }
+}
+
+/* Small phones — make WhatsApp icon-only */
+@media (max-width: 400px) {
+  .wa-label { display: none !important; }
+}
+
+/* When .main-nav has scrolled class on desktop */
+@media (min-width: 1024px) {
+  .main-nav.nav-scrolled { top: 0 !important; }
+}
