@@ -7,8 +7,20 @@
 
 /* ─── RESET & BASE ───────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html  { scroll-behavior: smooth; }
-body  { font-family: 'Jost', sans-serif; background: #0F0F0F; color: #fff; overflow-x: hidden; }
+html  {
+  scroll-behavior: smooth;
+  overflow-x: hidden;   /* prevent horizontal scroll at root */
+  width: 100%;
+}
+body  {
+  font-family: 'Jost', sans-serif;
+  background: #0F0F0F;
+  color: #fff;
+  overflow-x: hidden;
+  width: 100%;
+  /* Prevent scrollbar from shifting layout */
+  scrollbar-gutter: stable;
+}
 
 /* ─── UTILITY CLASSES ────────────────────────── */
 .font-display { font-family: 'Cormorant Garamond', serif; }
@@ -53,9 +65,15 @@ body  { font-family: 'Jost', sans-serif; background: #0F0F0F; color: #fff; overf
 .btn-outline:hover { background: rgba(201,168,76,0.1); border-color: #E8C97A; }
 
 /* ─── SCROLLBAR ──────────────────────────────── */
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: #0F0F0F; }
-::-webkit-scrollbar-thumb { background: #C9A84C; border-radius: 3px; }
+/* Scrollbar — desktop only, mobile gets none to prevent layout shift */
+@media (min-width: 1024px) {
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: #0F0F0F; }
+  ::-webkit-scrollbar-thumb { background: #C9A84C; border-radius: 3px; }
+}
+@media (max-width: 1023px) {
+  ::-webkit-scrollbar { width: 0; display: none; }
+}
 
 /* ─── FORM FIELDS ────────────────────────────── */
 .form-field { position: relative; margin-bottom: 24px; }
