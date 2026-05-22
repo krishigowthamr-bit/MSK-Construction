@@ -57,7 +57,7 @@ export default function Contact() {
           >
             <div className="space-y-8 mb-12">
               {[
-                { icon: <HiLocationMarker />, label: 'Our Office', value: '4th Floor, Cyber Towers, HITEC City, Hyderabad — 500081' },
+                { icon: <HiLocationMarker />, label: 'Our Office', value: '51, Madhavan Salai, K K Nagar, Tiruchirappalli — 620021' },
                 { icon: <HiPhone />, label: 'Phone', value: '+91 98765 43210' },
                 { icon: <HiMail />, label: 'Email', value: 'hello@luxeconstruct.in' },
               ].map((item, i) => (
