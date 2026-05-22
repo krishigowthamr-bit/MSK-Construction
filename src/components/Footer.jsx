@@ -1,98 +1,167 @@
-import { FaInstagram, FaLinkedinIn, FaFacebookF, FaYoutube } from 'react-icons/fa';
-import { HiArrowRight } from 'react-icons/hi';
+import { FaInstagram, FaLinkedinIn, FaFacebookF, FaYoutube, FaWhatsapp } from 'react-icons/fa';
+import { HiArrowRight, HiPhone, HiMail, HiLocationMarker } from 'react-icons/hi';
 
 const links = {
-  'Quick Links': ['Home', 'About Us', 'Services', 'Projects', 'Process', 'Contact'],
-  'Services': ['Architecture', 'Construction', 'Interior Design', 'Renovation', 'Consultation', 'Project Management'],
+  'Quick Links': [
+    { label: 'Home', href: '#home' },
+    { label: 'About Us', href: '#about' },
+    { label: 'Services', href: '#services' },
+    { label: 'Projects', href: '#projects' },
+    { label: 'Process', href: '#process' },
+    { label: 'Contact', href: '#contact' },
+  ],
+  'Our Services': [
+    { label: 'Architecture', href: '#services' },
+    { label: 'Construction', href: '#services' },
+    { label: 'Interior Design', href: '#services' },
+    { label: 'Renovation', href: '#services' },
+    { label: 'Consultation', href: '#contact' },
+    { label: 'Project Management', href: '#process' },
+  ],
 };
 
+const socials = [
+  { Icon: FaInstagram,  href: 'https://www.instagram.com/msk__construction/', label: 'Instagram' },
+  { Icon: FaYoutube,    href: 'https://www.youtube.com/@mskconstruction',      label: 'YouTube' },
+  { Icon: FaLinkedinIn, href: 'https://in.linkedin.com/company/mskconstruction', label: 'LinkedIn' },
+  { Icon: FaFacebookF,  href: '#',                                              label: 'Facebook' },
+  { Icon: FaWhatsapp,   href: 'https://wa.me/919360959094',                    label: 'WhatsApp' },
+];
+
 export default function Footer() {
-  const scrollTo = (id) => document.getElementById(id.toLowerCase())?.scrollIntoView({ behavior: 'smooth' });
+  const scrollTo = (href) => {
+    const el = document.querySelector(href);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
-    <footer style={{ background: '#080808', borderTop: '1px solid rgba(201,168,76,0.1)' }}>
-      <div className="max-w-7xl mx-auto px-6 pt-16 pb-8">
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-          {/* Brand */}
-          <div className="lg:col-span-1">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="relative">
-                <div className="w-10 h-10 border border-[#C9A84C] flex items-center justify-center">
-                  <span className="font-display text-lg font-bold gold-text">LC</span>
-                </div>
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-[#C9A84C]" />
-              </div>
-              <div>
-                <p className="font-display text-xl font-semibold tracking-wide text-white leading-none">LUXE</p>
-                <p className="text-[9px] tracking-[0.25em] text-[#C9A84C] uppercase leading-none mt-0.5">CONSTRUCT</p>
-              </div>
+    <footer style={{ background: '#060606', borderTop: '1px solid rgba(201,168,76,0.12)' }}>
+
+      {/* Top footer */}
+      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '64px 24px 48px', boxSizing: 'border-box' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '48px' }}>
+
+          {/* Brand column — real logo */}
+          <div style={{ gridColumn: 'span 1' }}>
+            {/* Real MSK Logo */}
+            <div
+              style={{ marginBottom: '24px', cursor: 'pointer', display: 'inline-block' }}
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            >
+              <img
+                src="/msk-logo.png"
+                alt="MSK Construction"
+                style={{ height: '90px', width: 'auto', objectFit: 'contain', display: 'block' }}
+              />
             </div>
-            <p className="text-white/35 text-[13px] font-light leading-relaxed mb-8">
-              Building luxury homes and commercial spaces with excellence, precision, and unmatched craftsmanship for over 15 years.
+
+            <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: '13px', fontWeight: 300, lineHeight: 1.9, marginBottom: '28px', fontFamily: 'Jost, sans-serif' }}>
+              Building luxury homes and commercial spaces with excellence, precision, and unmatched craftsmanship. Construct Your Future with MSK.
             </p>
-            <div className="flex gap-3">
-              {[FaInstagram, FaLinkedinIn, FaFacebookF, FaYoutube].map((Icon, i) => (
-                <a key={i} href="#" className="w-9 h-9 border border-[#C9A84C]/20 flex items-center justify-center text-white/30 text-sm hover:text-[#C9A84C] hover:border-[#C9A84C]/50 transition-all duration-300">
+
+            {/* Social icons */}
+            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+              {socials.map(({ Icon, href, label }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  style={{
+                    width: '36px', height: '36px',
+                    border: '1px solid rgba(201,168,76,0.2)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    color: 'rgba(255,255,255,0.3)',
+                    fontSize: '14px',
+                    textDecoration: 'none',
+                    transition: 'color 0.25s, border-color 0.25s',
+                    borderRadius: '2px',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.color = '#C9A84C'; e.currentTarget.style.borderColor = 'rgba(201,168,76,0.6)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.3)'; e.currentTarget.style.borderColor = 'rgba(201,168,76,0.2)'; }}
+                >
                   <Icon />
                 </a>
               ))}
             </div>
           </div>
 
-          {/* Links */}
+          {/* Link columns */}
           {Object.entries(links).map(([heading, items]) => (
             <div key={heading}>
-              <h4 className="text-[10px] tracking-[0.2em] uppercase text-[#C9A84C] mb-6 font-medium">{heading}</h4>
-              <ul className="space-y-3">
+              <h4 style={{ fontSize: '10px', letterSpacing: '0.22em', textTransform: 'uppercase', color: '#C9A84C', marginBottom: '20px', fontFamily: 'Jost, sans-serif', fontWeight: 500 }}>
+                {heading}
+              </h4>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 {items.map((item) => (
-                  <li key={item}>
-                    <button
-                      onClick={() => scrollTo(item.split(' ')[0])}
-                      className="text-white/35 text-[13px] font-light hover:text-[#C9A84C] transition-colors duration-300 flex items-center gap-2 group"
+                  <li key={item.label}>
+                    <a
+                      href={item.href}
+                      onClick={e => { e.preventDefault(); scrollTo(item.href); }}
+                      style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'rgba(255,255,255,0.35)', fontSize: '13px', fontWeight: 300, textDecoration: 'none', fontFamily: 'Jost, sans-serif', transition: 'color 0.2s' }}
+                      onMouseEnter={e => { e.currentTarget.style.color = '#C9A84C'; e.currentTarget.querySelector('.arrow').style.opacity = '1'; }}
+                      onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.35)'; e.currentTarget.querySelector('.arrow').style.opacity = '0'; }}
                     >
-                      <HiArrowRight className="text-[10px] opacity-0 group-hover:opacity-100 transition-opacity" />
-                      {item}
-                    </button>
+                      <HiArrowRight className="arrow" style={{ fontSize: '10px', opacity: 0, transition: 'opacity 0.2s', flexShrink: 0 }} />
+                      {item.label}
+                    </a>
                   </li>
                 ))}
               </ul>
             </div>
           ))}
 
-          {/* Contact info */}
+          {/* Contact column */}
           <div>
-            <h4 className="text-[10px] tracking-[0.2em] uppercase text-[#C9A84C] mb-6 font-medium">Contact</h4>
-            <div className="space-y-4">
-              <div>
-                <p className="text-[10px] text-white/25 uppercase tracking-widest mb-1">Address</p>
-                <p className="text-white/40 text-[13px] font-light leading-relaxed">4th Floor, Cyber Towers, HITEC City, Hyderabad — 500081</p>
-              </div>
-              <div>
-                <p className="text-[10px] text-white/25 uppercase tracking-widest mb-1">Phone</p>
-                <p className="text-white/40 text-[13px] font-light">+91 98765 43210</p>
-              </div>
-              <div>
-                <p className="text-[10px] text-white/25 uppercase tracking-widest mb-1">Email</p>
-                <p className="text-[#C9A84C]/70 text-[13px] font-light">hello@luxeconstruct.in</p>
-              </div>
-              <div>
-                <p className="text-[10px] text-white/25 uppercase tracking-widest mb-1">Hours</p>
-                <p className="text-white/40 text-[13px] font-light">Mon – Sat: 9:00 AM – 7:00 PM</p>
-              </div>
+            <h4 style={{ fontSize: '10px', letterSpacing: '0.22em', textTransform: 'uppercase', color: '#C9A84C', marginBottom: '20px', fontFamily: 'Jost, sans-serif', fontWeight: 500 }}>
+              Contact Us
+            </h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              {[
+                { icon: <HiLocationMarker />, label: 'Address', value: 'Chennai, Tamil Nadu, India' },
+                { icon: <HiPhone />, label: 'Phone', value: '+91 93609 59094' },
+                { icon: <HiPhone />, label: 'Phone', value: '+91 72000 94121' },
+                { icon: <HiMail />, label: 'Email', value: 'info@mskconstruction.in' },
+              ].map((c, i) => (
+                <div key={i} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                  <span style={{ color: '#C9A84C', fontSize: '15px', marginTop: '1px', flexShrink: 0 }}>{c.icon}</span>
+                  <div>
+                    <p style={{ color: 'rgba(255,255,255,0.2)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: '2px', fontFamily: 'Jost, sans-serif' }}>{c.label}</p>
+                    <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '13px', fontWeight: 300, fontFamily: 'Jost, sans-serif' }}>{c.value}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Bottom bar */}
-        <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-white/20 text-[12px] font-light tracking-wide">
-            © {new Date().getFullYear()} Luxe Construct. All rights reserved.
-          </p>
-          <div className="flex gap-6">
-            {['Privacy Policy', 'Terms of Service', 'Sitemap'].map((item) => (
-              <a key={item} href="#" className="text-white/20 text-[11px] tracking-wide hover:text-[#C9A84C]/60 transition-colors">
-                {item}
-              </a>
+      {/* Bottom bar */}
+      <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', padding: '20px 24px' }}>
+        <div style={{ maxWidth: '1280px', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', boxSizing: 'border-box' }}>
+          {/* Logo small in bottom bar */}
+          <img
+            src="/msk-logo.png"
+            alt="MSK Construction"
+            style={{ height: '36px', width: 'auto', objectFit: 'contain', opacity: 0.6 }}
+          />
+          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '4px 24px' }}>
+            <p style={{ color: 'rgba(255,255,255,0.18)', fontSize: '12px', fontFamily: 'Jost, sans-serif', fontWeight: 300 }}>
+              © {new Date().getFullYear()} MSK Construction. All rights reserved.
+            </p>
+            <span style={{ color: 'rgba(255,255,255,0.1)' }}>|</span>
+            <p style={{ color: 'rgba(255,255,255,0.15)', fontSize: '12px', fontFamily: 'Jost, sans-serif', fontWeight: 300 }}>
+              Construct Your Future
+            </p>
+          </div>
+          <div style={{ display: 'flex', gap: '20px' }}>
+            {['Privacy Policy', 'Terms of Service', 'Sitemap'].map(item => (
+              <a key={item} href="#"
+                style={{ color: 'rgba(255,255,255,0.18)', fontSize: '11px', fontFamily: 'Jost, sans-serif', textDecoration: 'none', transition: 'color 0.2s' }}
+                onMouseEnter={e => e.currentTarget.style.color = 'rgba(201,168,76,0.6)'}
+                onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.18)'}
+              >{item}</a>
             ))}
           </div>
         </div>

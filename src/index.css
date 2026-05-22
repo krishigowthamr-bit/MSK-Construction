@@ -106,6 +106,52 @@ body  {
 .swiper-pagination-bullet { background: rgba(201,168,76,0.3) !important; width: 8px !important; height: 8px !important; }
 .swiper-pagination-bullet-active { background: #C9A84C !important; width: 28px !important; border-radius: 4px !important; }
 
+
+/* ════════════════════════════════════════
+   NAVBAR — responsive classes
+   Mobile first: hamburger visible, nav/cta hidden
+   Desktop (≥1024px): hamburger hidden, nav/cta visible
+   Top bar: desktop only, slides away on scroll
+════════════════════════════════════════ */
+
+/* Mobile: topbar hidden, desktop nav/cta hidden */
+.nb-topbar   { display: none !important; }
+.nb-links    { display: none !important; }
+.nb-cta      { display: none !important; }
+.nb-hamburger {
+  display: flex !important;
+  align-items: center; justify-content: center;
+  opacity: 1 !important; visibility: visible !important;
+}
+
+/* Mobile: nav sits at very top */
+.nb-main { top: 0 !important; }
+
+/* WhatsApp label — hide on very small screens */
+.wa-label { display: none; }
+
+/* Desktop (≥1024px) */
+@media (min-width: 1024px) {
+  .nb-topbar    { display: flex !important; }
+  .nb-links     { display: flex !important; }
+  .nb-cta       { display: flex !important; }
+  .nb-hamburger { display: none !important; }
+
+  /* Nav below topbar when topbar visible, at top:0 when scrolled (JS removes topbar) */
+  .nb-main { top: 36px !important; }
+  .nb-main.nb-scrolled { top: 0 !important; }
+
+  .wa-label { display: inline !important; }
+}
+
+/* Tiny phones: WhatsApp icon only */
+@media (max-width: 400px) {
+  .wa-label { display: none !important; }
+}
+
+.swiper-pagination-bullet { background: rgba(201,168,76,0.3) !important; width: 8px !important; height: 8px !important; }
+.swiper-pagination-bullet-active { background: #C9A84C !important; width: 28px !important; border-radius: 4px !important; }
+
 /* ═══════════════════════════════════════════════
    NAVBAR — all styles here, NO inline display styles in JSX
 ═══════════════════════════════════════════════ */

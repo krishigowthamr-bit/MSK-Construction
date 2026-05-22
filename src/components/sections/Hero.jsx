@@ -68,6 +68,7 @@ export default function Hero() {
           style={{ maxWidth: '800px' }}
         >
           {/* Eyebrow */}
+          <br/>
           <motion.div variants={fadeUp} style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '28px' }}>
             <div style={{ width: '36px', height: '1px', background: '#C9A84C', flexShrink: 0 }} />
             <span className="section-eyebrow">Premium Construction &amp; Architecture</span>
