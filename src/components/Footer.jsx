@@ -119,7 +119,7 @@ export default function Footer() {
             </h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {[
-                { icon: <HiLocationMarker />, label: 'Address', value: 'Chennai, Tamil Nadu, India' },
+                { icon: <HiLocationMarker />, label: 'Address', value: 'Trichy, Tamil Nadu, India' },
                 { icon: <HiPhone />, label: 'Phone', value: '+91 93609 59094' },
                 { icon: <HiPhone />, label: 'Phone', value: '+91 72000 94121' },
                 { icon: <HiMail />, label: 'Email', value: 'info@mskconstruction.in' },
