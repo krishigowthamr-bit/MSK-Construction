@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { staggerContainer, fadeUp } from '../../animations/variants';
 import { HiArrowRight } from 'react-icons/hi';
+import { Link } from 'react-router-dom';
 
 const categories = ['All', 'Villas', 'Farm Houses', 'Residences', 'Commercial'];
 
@@ -172,9 +173,23 @@ export default function Projects() {
           transition={{ delay: 0.5 }}
           className="text-center mt-14"
         >
-          <button className="btn-outline text-xs tracking-[0.15em] uppercase px-12 py-4">
+          <Link
+            to="/projects"
+            style={{
+              display: 'inline-block',
+              padding: '14px 48px',
+              border: '1px solid rgba(201,168,76,0.5)',
+              color: '#E8C97A',
+              fontSize: '12px', letterSpacing: '0.15em', textTransform: 'uppercase',
+              fontFamily: 'Jost, sans-serif', fontWeight: 500,
+              textDecoration: 'none', borderRadius: '2px',
+              transition: 'all 0.3s',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(201,168,76,0.1)'; e.currentTarget.style.borderColor = '#C9A84C'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'rgba(201,168,76,0.5)'; }}
+          >
             View All Projects
-          </button>
+          </Link>
         </motion.div>
       </div>
     </section>

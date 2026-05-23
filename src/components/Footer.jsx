@@ -1,4 +1,5 @@
 import { FaInstagram, FaLinkedinIn, FaFacebookF, FaYoutube, FaWhatsapp } from 'react-icons/fa';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { HiArrowRight, HiPhone, HiMail, HiLocationMarker } from 'react-icons/hi';
 
 const links = {
@@ -29,9 +30,24 @@ const socials = [
 ];
 
 export default function Footer() {
-  const scrollTo = (href) => {
-    const el = document.querySelector(href);
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const navTo = (href) => {
+    if (href.startsWith('/') && !href.startsWith('/#')) {
+      navigate(href);
+      window.scrollTo(0, 0);
+      return;
+    }
+    const id = href.replace('#', '');
+    if (location.pathname === '/') {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      navigate('/');
+      setTimeout(() => {
+        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+      }, 350);
+    }
   };
 
   return (
@@ -98,7 +114,7 @@ export default function Footer() {
                   <li key={item.label}>
                     <a
                       href={item.href}
-                      onClick={e => { e.preventDefault(); scrollTo(item.href); }}
+                      onClick={e => { e.preventDefault(); navTo(item.href); }}
                       style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'rgba(255,255,255,0.35)', fontSize: '13px', fontWeight: 300, textDecoration: 'none', fontFamily: 'Jost, sans-serif', transition: 'color 0.2s' }}
                       onMouseEnter={e => { e.currentTarget.style.color = '#C9A84C'; e.currentTarget.querySelector('.arrow').style.opacity = '1'; }}
                       onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.35)'; e.currentTarget.querySelector('.arrow').style.opacity = '0'; }}
@@ -119,7 +135,7 @@ export default function Footer() {
             </h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {[
-                { icon: <HiLocationMarker />, label: 'Address', value: 'Trichy, Tamil Nadu, India' },
+                { icon: <HiLocationMarker />, label: 'Address', value: 'Chennai, Tamil Nadu, India' },
                 { icon: <HiPhone />, label: 'Phone', value: '+91 93609 59094' },
                 { icon: <HiPhone />, label: 'Phone', value: '+91 72000 94121' },
                 { icon: <HiMail />, label: 'Email', value: 'info@mskconstruction.in' },
