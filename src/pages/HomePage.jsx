@@ -10,6 +10,7 @@ import Stats from '../components/sections/Stats';
 import Contact from '../components/sections/Contact';
 import Footer from '../components/Footer';
 import ScrollToTop from '../components/ui/ScrollToTop';
+import LeadPopup from '../components/ui/LeadPopup';
 
 export default function HomePage() {
   return (
@@ -28,6 +29,7 @@ export default function HomePage() {
       </main>
       <Footer />
       <ScrollToTop />
+      <LeadPopup />
     </div>
   );
 }

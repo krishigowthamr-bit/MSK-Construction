@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import ScrollToTop from '../components/ui/ScrollToTop';
-import { HiHome, HiChevronRight } from 'react-icons/hi';
-import { fadeUp, staggerContainer } from '../animations/variants';
+import LeadPopup from '../components/ui/LeadPopup';
+import { HiHome, HiChevronRight, HiX, HiArrowRight, HiPhotograph } from 'react-icons/hi';
 
 const CATEGORIES = ['All', 'Villa', 'Farm House', 'Residence', 'Commercial', 'Interior', 'Renovation'];
 
@@ -46,7 +46,42 @@ const PROJECTS = [
 
 const INITIAL_COUNT = 12;
 
-function ProjectCard({ project, index }) {
+const progressStages = [
+  { title: 'Site Cleared', query: 'construction-site-preparation' },
+  { title: 'Bhoomi Pooja Ceremony', query: 'house-construction-ceremony' },
+  { title: 'Foundation Started', query: 'building-foundation-construction' },
+  { title: 'Footings Laid', query: 'foundation-steel-construction' },
+  { title: 'Column & Slab Work', query: 'concrete-column-slab-construction' },
+  { title: 'Elevation Work', query: 'modern-house-construction-exterior' },
+  { title: 'Interior View', query: 'luxury-home-interior-construction' },
+  { title: 'Modular Kitchen Setup', query: 'modern-modular-kitchen-interior' },
+  { title: 'Final Elevation Touchups', query: 'modern-villa-exterior-finishing' },
+];
+
+const slugify = (value) =>
+  value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+const getProjectGallery = (project) => [
+  { title: 'Completed Home Front View', img: project.img },
+  ...progressStages.map((stage, index) => ({
+    title: stage.title,
+    img: `https://source.unsplash.com/900x650/?${stage.query},${project.category.toLowerCase()},construction&sig=${project.id}-${index}`,
+  })),
+];
+
+const PROJECT_DETAILS = PROJECTS.map((project) => ({
+  ...project,
+  slug: slugify(`${project.title}-${project.location}`),
+  floors: project.title.match(/G\+\d/)?.[0] || (project.category === 'Commercial' ? 'Multi Floor' : 'G+1'),
+  facing: ['East', 'North', 'West', 'South'][project.id % 4],
+  packageName: project.category === 'Villa' || project.category === 'Farm House' ? 'Premium' : project.category === 'Interior' ? 'Interior' : 'Standard',
+  plotSize: project.category === 'Commercial' ? 'Commercial Plot' : `${30 + project.id} x ${45 + project.id}`,
+  status: Number(project.year) >= 2024 ? 'Ongoing' : 'Completed',
+  description: `${project.title} in ${project.location} showcases MSK Construction's attention to durable structure, elegant planning, and finish quality. The project combines practical layouts, natural light, and refined material choices for a comfortable ${project.category.toLowerCase()} experience.`,
+  gallery: getProjectGallery(project),
+}));
+
+function ProjectCard({ project, index, onOpen }) {
   return (
     <motion.div
       layout
@@ -66,7 +101,12 @@ function ProjectCard({ project, index }) {
       whileHover={{ y: -6, borderColor: 'rgba(201,168,76,0.4)', boxShadow: '0 20px 60px rgba(0,0,0,0.4)' }}
     >
       {/* Image */}
-      <div style={{ position: 'relative', overflow: 'hidden', height: '240px' }}>
+      <button
+        type="button"
+        onClick={() => onOpen(project)}
+        aria-label={`Open ${project.title} gallery`}
+        style={{ position: 'relative', overflow: 'hidden', height: '240px', width: '100%', border: 'none', padding: 0, background: 'transparent', cursor: 'pointer', display: 'block' }}
+      >
         <img
           src={project.img}
           alt={project.title}
@@ -86,6 +126,26 @@ function ProjectCard({ project, index }) {
         }}
           className="card-overlay"
         />
+        <div style={{
+          position: 'absolute',
+          left: '50%',
+          top: '50%',
+          transform: 'translate(-50%, -50%)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          padding: '10px 16px',
+          background: 'rgba(8,8,8,0.74)',
+          border: '1px solid rgba(201,168,76,0.45)',
+          color: '#E8C97A',
+          fontSize: '11px',
+          letterSpacing: '0.12em',
+          textTransform: 'uppercase',
+          opacity: 0.92,
+          pointerEvents: 'none',
+        }}>
+          <HiPhotograph /> View Gallery
+        </div>
         {/* Category badge */}
         <div style={{
           position: 'absolute', top: '14px', left: '14px',
@@ -112,7 +172,7 @@ function ProjectCard({ project, index }) {
         }}>
           {project.year}
         </div>
-      </div>
+      </button>
 
       {/* Info */}
       <div style={{ padding: '20px 22px 22px' }}>
@@ -130,19 +190,25 @@ function ProjectCard({ project, index }) {
           <span style={{ color: '#C9A84C', fontSize: '12px', fontFamily: 'Jost, sans-serif', letterSpacing: '0.05em' }}>
             {project.area}
           </span>
-          <div style={{
+          <button
+            type="button"
+            onClick={() => onOpen(project)}
+            aria-label={`Open ${project.title} details`}
+            style={{
             width: '32px', height: '32px',
             border: '1px solid rgba(201,168,76,0.3)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             color: '#C9A84C', fontSize: '14px',
             transition: 'background 0.25s, border-color 0.25s',
             borderRadius: '2px',
+            background: 'transparent',
+            cursor: 'pointer',
           }}
             onMouseEnter={e => { e.currentTarget.style.background = '#C9A84C'; e.currentTarget.style.color = '#000'; }}
             onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#C9A84C'; }}
           >
-            →
-          </div>
+            <HiArrowRight />
+          </button>
         </div>
       </div>
     </motion.div>
@@ -441,6 +507,7 @@ export default function ProjectsPage() {
 
       <Footer />
       <ScrollToTop />
+      <LeadPopup />
     </div>
   );
 }

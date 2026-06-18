@@ -5,19 +5,19 @@ import { HiArrowRight, HiPhone, HiMail, HiLocationMarker } from 'react-icons/hi'
 const links = {
   'Quick Links': [
     { label: 'Home', href: '#home' },
-    { label: 'About Us', href: '#about' },
-    { label: 'Services', href: '#services' },
+    { label: 'About', href: '#about' },
     { label: 'Projects', href: '#projects' },
-    { label: 'Process', href: '#process' },
+    { label: 'Career', href: '#contact' },
     { label: 'Contact', href: '#contact' },
+    { label: 'Vendor Registration', href: '#contact' },
   ],
   'Our Services': [
-    { label: 'Architecture', href: '#services' },
     { label: 'Construction', href: '#services' },
-    { label: 'Interior Design', href: '#services' },
+    { label: 'Architecture', href: '#services' },
+    { label: 'Interior', href: '#services' },
     { label: 'Renovation', href: '#services' },
-    { label: 'Consultation', href: '#contact' },
-    { label: 'Project Management', href: '#process' },
+    { label: 'Construction Packages', href: '#contact' },
+    { label: 'Cost Estimator', href: '#contact' },
   ],
 };
 
