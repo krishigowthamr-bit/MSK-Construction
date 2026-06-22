@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -215,14 +215,210 @@ function ProjectCard({ project, index, onOpen }) {
   );
 }
 
+function ProjectPopup({ project, detailsOpen, onClose, onViewDetails, onBack }) {
+  useEffect(() => {
+    const handleKey = (event) => {
+      if (event.key === 'Escape') onClose();
+    };
+
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', handleKey);
+
+    return () => {
+      document.body.style.overflow = '';
+      window.removeEventListener('keydown', handleKey);
+    };
+  }, [onClose]);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      onClick={onClose}
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 120,
+        background: 'rgba(4,4,4,0.88)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '24px',
+      }}
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 24, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 18, scale: 0.98 }}
+        transition={{ duration: 0.25 }}
+        onClick={event => event.stopPropagation()}
+        style={{
+          width: 'min(1080px, 100%)',
+          maxHeight: 'calc(100vh - 48px)',
+          overflowY: 'auto',
+          background: '#101010',
+          border: '1px solid rgba(201,168,76,0.22)',
+          boxShadow: '0 30px 90px rgba(0,0,0,0.75)',
+        }}
+      >
+        <div style={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 2,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '18px',
+          padding: '18px 20px',
+          background: 'rgba(16,16,16,0.97)',
+          borderBottom: '1px solid rgba(255,255,255,0.07)',
+        }}>
+          <div>
+            <p style={{ color: '#C9A84C', fontSize: '10px', letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: '5px' }}>
+              {detailsOpen ? 'Project Gallery' : 'Project Preview'}
+            </p>
+            <h3 className="font-display" style={{ color: '#fff', fontSize: 'clamp(1.35rem, 3vw, 2rem)', fontWeight: 300, lineHeight: 1.2 }}>
+              {project.title}
+            </h3>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close project popup"
+            style={{
+              width: '42px',
+              height: '42px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              border: '1px solid rgba(255,255,255,0.12)',
+              background: 'transparent',
+              color: '#fff',
+              cursor: 'pointer',
+              flexShrink: 0,
+            }}
+          >
+            <HiX style={{ fontSize: '22px' }} />
+          </button>
+        </div>
+
+        {!detailsOpen ? (
+          <div className="project-modal-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.15fr) minmax(300px, 0.85fr)' }}>
+            <div style={{ minHeight: '380px', background: '#080808' }}>
+              <img
+                src={project.img}
+                alt={project.title}
+                style={{ width: '100%', height: '100%', minHeight: '380px', objectFit: 'cover', display: 'block' }}
+              />
+            </div>
+            <div style={{ padding: '30px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '28px' }}>
+              <div>
+                <p style={{ color: '#C9A84C', fontSize: '11px', letterSpacing: '0.16em', textTransform: 'uppercase', marginBottom: '14px' }}>
+                  {project.category} / {project.status}
+                </p>
+                <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: '14px', lineHeight: 1.8, marginBottom: '22px' }}>
+                  {project.description}
+                </p>
+                <div style={{ display: 'grid', gap: '13px' }}>
+                  {[
+                    ['Location', project.location],
+                    ['Built Area', project.area],
+                    ['Floors', project.floors],
+                    ['Facing', project.facing],
+                    ['Package', project.packageName],
+                    ['Year', project.year],
+                  ].map(([label, value]) => (
+                    <div key={label} style={{ display: 'flex', justifyContent: 'space-between', gap: '18px', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '12px' }}>
+                      <span style={{ color: 'rgba(255,255,255,0.28)', fontSize: '10px', letterSpacing: '0.14em', textTransform: 'uppercase' }}>{label}</span>
+                      <span style={{ color: 'rgba(255,255,255,0.72)', fontSize: '13px', textAlign: 'right' }}>{value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={onViewDetails}
+                className="btn-gold"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '9px',
+                  width: '100%',
+                  padding: '15px',
+                  fontSize: '12px',
+                  letterSpacing: '0.14em',
+                  textTransform: 'uppercase',
+                }}
+              >
+                <HiPhotograph /> View Details
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div style={{ padding: '28px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '18px', flexWrap: 'wrap', marginBottom: '22px' }}>
+              <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '14px', lineHeight: 1.7, maxWidth: '660px' }}>
+                Complete image sequence for {project.location}, including exterior, site progress, structure, and finishing views.
+              </p>
+              <button
+                type="button"
+                onClick={onBack}
+                style={{
+                  padding: '10px 16px',
+                  border: '1px solid rgba(201,168,76,0.42)',
+                  background: 'transparent',
+                  color: '#E8C97A',
+                  cursor: 'pointer',
+                  fontSize: '12px',
+                  letterSpacing: '0.12em',
+                  textTransform: 'uppercase',
+                }}
+              >
+                Back to Preview
+              </button>
+            </div>
+
+            <div className="project-gallery-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '14px' }}>
+              {project.gallery.map((item, index) => (
+                <div key={`${item.title}-${index}`} style={{ position: 'relative', aspectRatio: index === 0 ? '16 / 11' : '4 / 3', overflow: 'hidden', background: '#080808', border: '1px solid rgba(255,255,255,0.07)' }}>
+                  <img src={item.img} alt={`${project.title} - ${item.title}`} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                  <div style={{
+                    position: 'absolute',
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    padding: '28px 12px 12px',
+                    background: 'linear-gradient(to top, rgba(0,0,0,0.82), transparent)',
+                  }}>
+                    <span style={{ color: '#E8C97A', fontSize: '10px', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+                      {item.title}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </motion.div>
+    </motion.div>
+  );
+}
+
 export default function ProjectsPage() {
   const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState('All');
   const [visibleCount, setVisibleCount] = useState(INITIAL_COUNT);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [detailsOpen, setDetailsOpen] = useState(false);
 
   const filtered = activeCategory === 'All'
-    ? PROJECTS
-    : PROJECTS.filter(p => p.category === activeCategory);
+    ? PROJECT_DETAILS
+    : PROJECT_DETAILS.filter(p => p.category === activeCategory);
 
   const visible = filtered.slice(0, visibleCount);
   const hasMore = visibleCount < filtered.length;
@@ -232,6 +428,16 @@ export default function ProjectsPage() {
     setActiveCategory(cat);
     setVisibleCount(INITIAL_COUNT);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const openProject = (project) => {
+    setSelectedProject(project);
+    setDetailsOpen(false);
+  };
+
+  const closeProject = () => {
+    setSelectedProject(null);
+    setDetailsOpen(false);
   };
 
   return (
@@ -416,9 +622,9 @@ export default function ProjectsPage() {
             gap: '24px',
           }}
         >
-          <AnimatePresence mode="popLayout">
+          <AnimatePresence>
             {visible.map((project, index) => (
-              <ProjectCard key={project.id} project={project} index={index} />
+              <ProjectCard key={project.id} project={project} index={index} onOpen={openProject} />
             ))}
           </AnimatePresence>
         </motion.div>
@@ -508,6 +714,18 @@ export default function ProjectsPage() {
       <Footer />
       <ScrollToTop />
       <LeadPopup />
+
+      <AnimatePresence>
+        {selectedProject && (
+          <ProjectPopup
+            project={selectedProject}
+            detailsOpen={detailsOpen}
+            onClose={closeProject}
+            onViewDetails={() => setDetailsOpen(true)}
+            onBack={() => setDetailsOpen(false)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -10,45 +10,22 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
    href: '#id'    → smooth scroll to section on homepage
 ───────────────────────────────────────── */
 const navItems = [
-  {
-    label: 'Company',
-    dropdown: [
-      { label: 'About',              href: '#about' },
-      { label: 'Career',             href: '#contact' },
-      { label: 'Vendor Registration', href: '#contact' },
-    ],
-  },
+  { label: 'Home', href: '/', isRoute: true },
+  { label: 'About', href: '/about', isRoute: true },
   {
     label: 'Services',
     dropdown: [
-      { label: 'Construction', href: '#services' },
-      { label: 'Architecture', href: '#services' },
-      { label: 'Interior',     href: '#services' },
-      { label: 'Renovation',   href: '#services' },
+      { label: 'Construction', href: '/services/construction' },
+      { label: 'Architecture', href: '/services/architecture' },
+      { label: 'Interior',     href: '/services/interior' },
+      { label: 'Renovation',   href: '/services/renovation' },
     ],
   },
   { label: 'Projects',   href: '/projects', isRoute: true },
-  {
-    label: 'Packages',
-    dropdown: [
-      { label: 'Construction Packages', href: '#contact' },
-      { label: 'Basic Package',         href: '#contact' },
-      { label: 'Mid-Range Package',     href: '#contact' },
-      { label: 'Premium Package',       href: '#contact' },
-      { label: 'Cost Estimator',        href: '#contact' },
-    ],
-  },
-  {
-    label: 'Resources',
-    dropdown: [
-      { label: 'Awards & Certifications', href: '#awards' },
-      { label: 'Construction Process',    href: '#process' },
-      { label: 'Google Reviews',          href: '#testimonials' },
-      { label: 'FAQ',                     href: '#contact' },
-      { label: 'Admin Form',              href: '/admin' },
-    ],
-  },
-  { label: 'Contact Us', href: '#contact' },
+  { label: 'Packages', href: '/packages', isRoute: true },
+  { label: 'Blog', href: '/blog', isRoute: true },
+  { label: 'Team', href: '/team', isRoute: true },
+  { label: 'Contact', href: '/contact' },
 ];
 
 /* ─────────────────────────────────────────

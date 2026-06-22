@@ -4,20 +4,26 @@ import { HiArrowRight, HiPhone, HiMail, HiLocationMarker } from 'react-icons/hi'
 
 const links = {
   'Quick Links': [
-    { label: 'Home', href: '#home' },
-    { label: 'About', href: '#about' },
-    { label: 'Projects', href: '#projects' },
-    { label: 'Career', href: '#contact' },
-    { label: 'Contact', href: '#contact' },
-    { label: 'Vendor Registration', href: '#contact' },
+    { label: 'Home', href: '/' },
+    { label: 'About', href: '/about' },
+    { label: 'Projects', href: '/projects' },
+    { label: 'Blog', href: '/blog' },
+    { label: 'Team', href: '/team' },
+    { label: 'Contact', href: '/contact' },
   ],
   'Our Services': [
-    { label: 'Construction', href: '#services' },
-    { label: 'Architecture', href: '#services' },
-    { label: 'Interior', href: '#services' },
-    { label: 'Renovation', href: '#services' },
-    { label: 'Construction Packages', href: '#contact' },
-    { label: 'Cost Estimator', href: '#contact' },
+    { label: 'Construction', href: '/services/construction' },
+    { label: 'Architecture', href: '/services/architecture' },
+    { label: 'Interior', href: '/services/interior' },
+    { label: 'Renovation', href: '/services/renovation' },
+    { label: 'Construction Packages', href: '/packages' },
+    { label: 'Cost Estimator', href: '/services/construction/cost-estimator-chennai' },
+  ],
+  'Resources': [
+    { label: 'FAQ', href: '/contact' },
+    { label: 'Career', href: '/career' },
+    { label: 'Vendor Registration', href: '/vendor-registration' },
+    { label: 'Admin Form', href: '/admin' },
   ],
 };
 

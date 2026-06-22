@@ -123,6 +123,19 @@ body  {
   .admin-grid {
     grid-template-columns: 1fr !important;
   }
+
+  .project-modal-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .service-detail-grid,
+  .about-page-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .service-detail-grid > * {
+    order: initial !important;
+  }
 }
 
 /* ─── ANIMATIONS ─────────────────────────────── */
