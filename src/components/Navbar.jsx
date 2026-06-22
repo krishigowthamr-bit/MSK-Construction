@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { HiMenuAlt3, HiX, HiChevronDown, HiPhone } from 'react-icons/hi';
 import { FaWhatsapp, FaInstagram, FaYoutube, FaLinkedinIn, FaFacebookF } from 'react-icons/fa';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { companyInfo } from '../data/site';
 
 /* ─────────────────────────────────────────
    NAV ITEMS
@@ -232,14 +233,10 @@ export default function Navbar() {
         transition: 'transform 0.3s ease, opacity 0.25s ease',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '20px', color: 'rgba(255,255,255,0.5)' }}>
-          <a href="tel:+919360959094" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'inherit', textDecoration: 'none' }}
+          <a href={`tel:${companyInfo.phoneHref}`} style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'inherit', textDecoration: 'none' }}
             onMouseEnter={e => e.currentTarget.style.color = '#C9A84C'}
             onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.5)'}
-          ><HiPhone /> +91 93609 59094</a>
-          <a href="tel:+917200094121" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'inherit', textDecoration: 'none' }}
-            onMouseEnter={e => e.currentTarget.style.color = '#C9A84C'}
-            onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.5)'}
-          ><HiPhone /> +91 72000 94121</a>
+          ><HiPhone /> {companyInfo.phone}</a>
           <span style={{ color: 'rgba(255,255,255,0.15)' }}>|</span>
           <span style={{ color: 'rgba(255,255,255,0.25)', letterSpacing: '0.15em', textTransform: 'uppercase', fontSize: '10px' }}>MON – SAT: 9AM – 7PM</span>
         </div>
@@ -292,7 +289,7 @@ export default function Navbar() {
 
           {/* Desktop CTA */}
           <div className="nb-cta" style={{ display: 'none', alignItems: 'center', flexShrink: 0 }}>
-            <a href="tel:+919360959094" style={{
+            <a href={`tel:${companyInfo.phoneHref}`} style={{
               display: 'flex', alignItems: 'center', gap: '8px',
               padding: '10px 20px', border: '1px solid rgba(201,168,76,0.5)',
               borderRadius: '3px', color: '#C9A84C', fontSize: '13px', fontWeight: 500,
@@ -302,7 +299,7 @@ export default function Navbar() {
               onMouseEnter={e => { e.currentTarget.style.background = 'rgba(201,168,76,0.1)'; e.currentTarget.style.borderColor = '#C9A84C'; }}
               onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'rgba(201,168,76,0.5)'; }}
             >
-              <HiPhone style={{ fontSize: '15px' }} /> +91 93609 59094
+              <HiPhone style={{ fontSize: '15px' }} /> {companyInfo.phone}
             </a>
           </div>
 
@@ -409,13 +406,13 @@ export default function Navbar() {
               ))}
 
               <div style={{ marginTop: '28px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                <a href="tel:+919360959094" style={{
+                <a href={`tel:${companyInfo.phoneHref}`} style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
                   padding: '14px', border: '1px solid rgba(201,168,76,0.5)',
                   borderRadius: '3px', color: '#C9A84C', fontSize: '15px',
                   fontFamily: 'Jost, sans-serif', textDecoration: 'none',
                 }}>
-                  <HiPhone /> +91 93609 59094
+                  <HiPhone /> {companyInfo.phone}
                 </a>
                 <button
                   onClick={() => handleMobileNav('#contact')}
@@ -456,7 +453,7 @@ export default function Navbar() {
       </AnimatePresence>
 
       {/* ══ WHATSAPP FLOAT ══ */}
-      <a href="https://wa.me/919360959094" target="_blank" rel="noopener noreferrer"
+      <a href={`https://wa.me/${companyInfo.whatsapp}`} target="_blank" rel="noopener noreferrer"
         aria-label="Chat on WhatsApp"
         style={{
           position: 'fixed',

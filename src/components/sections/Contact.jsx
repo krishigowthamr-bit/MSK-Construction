@@ -1,8 +1,9 @@
 import { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { staggerContainer, fadeUp, fadeLeft, fadeRight } from '../../animations/variants';
-import { HiPhone, HiMail, HiLocationMarker } from 'react-icons/hi';
+import { HiPhone, HiLocationMarker } from 'react-icons/hi';
 import { FaInstagram, FaLinkedinIn, FaFacebookF, FaYoutube } from 'react-icons/fa';
+import { companyInfo } from '../../data/site';
 
 const socials = [
   { icon: <FaInstagram />, href: '#' },
@@ -57,9 +58,8 @@ export default function Contact() {
           >
             <div className="space-y-8 mb-12">
               {[
-                { icon: <HiLocationMarker />, label: 'Our Office', value: '51, Madhavan Salai, K K Nagar, Tiruchirappalli — 620021' },
-                { icon: <HiPhone />, label: 'Phone', value: '+91 98765 43210' },
-                { icon: <HiMail />, label: 'Email', value: 'hello@luxeconstruct.in' },
+                { icon: <HiLocationMarker />, label: 'Our Office', value: companyInfo.address, href: companyInfo.mapUrl },
+                { icon: <HiPhone />, label: 'Phone', value: companyInfo.phone, href: `tel:${companyInfo.phoneHref}` },
               ].map((item, i) => (
                 <div key={i} className="flex gap-5">
                   <div className="w-12 h-12 flex-shrink-0 border border-[#C9A84C]/30 flex items-center justify-center text-[#C9A84C] text-lg">
@@ -67,7 +67,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <p className="text-[10px] tracking-[0.2em] uppercase text-[#C9A84C] mb-1">{item.label}</p>
-                    <p className="text-white/60 text-[14px] font-light leading-relaxed">{item.value}</p>
+                    <a href={item.href} target={item.href?.startsWith('http') ? '_blank' : undefined} rel={item.href?.startsWith('http') ? 'noopener noreferrer' : undefined} className="text-white/60 text-[14px] font-light leading-relaxed no-underline">{item.value}</a>
                   </div>
                 </div>
               ))}

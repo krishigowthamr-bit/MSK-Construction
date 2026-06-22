@@ -5,24 +5,24 @@ export default function TeamPage() {
   return (
     <PageShell
       seoTitle="Team"
-      seoDescription="Meet the MSK Construction team behind construction, architecture, planning, and site execution."
+      seoDescription="Meet the proprietor personally handling MSK Construction enquiries, site visits, and project execution."
       hero={{
-        eyebrow: 'Our Team',
-        title: 'Meet the Experts Behind Your Dream Spaces',
-        description: 'Our team brings design, planning, project management, procurement, and site execution together under one coordinated process.',
+        eyebrow: 'Founder Led',
+        title: 'Meet the Person Behind MSK Construction',
+        description: 'MSK Construction is currently handled directly by its proprietor, giving every client a clear single point of contact from enquiry to project updates.',
         image: 'https://images.unsplash.com/photo-1556761175-b413da4baf72?w=1800&q=80',
         current: 'Team',
       }}
     >
       <section className="section-pad" style={{ background: '#0F0F0F' }}>
-        <div style={{ maxWidth: '1180px', margin: '0 auto', padding: '0 24px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))', gap: '18px' }}>
-          {teamMembers.map(([name, role, quote], index) => (
+        <div style={{ maxWidth: '520px', margin: '0 auto', padding: '0 24px' }}>
+          {teamMembers.map(({ name, role, quote, photo }) => (
             <article key={name} style={{ border: '1px solid rgba(201,168,76,0.15)', background: 'rgba(255,255,255,0.025)', overflow: 'hidden' }}>
-              <img src={`https://images.unsplash.com/photo-${['1560250097-0b93528c311a','1573496359142-b8d87734a5a2','1519085360753-af0119f7cbe7','1580489944761-15a19d654956'][index % 4]}?w=700&q=80`} alt={name} style={{ width: '100%', height: '230px', objectFit: 'cover' }} />
-              <div style={{ padding: '20px' }}>
-                <h2 className="font-display" style={{ color: '#fff', fontSize: '24px', fontWeight: 300 }}>{name}</h2>
+              <img src={photo} alt={name} style={{ width: '100%', height: '560px', objectFit: 'cover', objectPosition: 'center top' }} />
+              <div style={{ padding: '24px' }}>
+                <h2 className="font-display" style={{ color: '#fff', fontSize: '30px', fontWeight: 300 }}>{name}</h2>
                 <p style={{ color: '#C9A84C', fontSize: '11px', letterSpacing: '0.14em', textTransform: 'uppercase', margin: '4px 0 12px' }}>{role}</p>
-                <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '13px', lineHeight: 1.7 }}>{quote}</p>
+                <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '14px', lineHeight: 1.8 }}>{quote}</p>
               </div>
             </article>
           ))}

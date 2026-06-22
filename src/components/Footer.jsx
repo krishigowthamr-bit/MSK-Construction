@@ -1,6 +1,7 @@
 import { FaInstagram, FaLinkedinIn, FaFacebookF, FaYoutube, FaWhatsapp } from 'react-icons/fa';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { HiArrowRight, HiPhone, HiMail, HiLocationMarker } from 'react-icons/hi';
+import { HiArrowRight, HiPhone, HiLocationMarker } from 'react-icons/hi';
+import { companyInfo } from '../data/site';
 
 const links = {
   'Quick Links': [
@@ -32,7 +33,7 @@ const socials = [
   { Icon: FaYoutube,    href: 'https://www.youtube.com/@mskconstruction',      label: 'YouTube' },
   { Icon: FaLinkedinIn, href: 'https://in.linkedin.com/company/mskconstruction', label: 'LinkedIn' },
   { Icon: FaFacebookF,  href: '#',                                              label: 'Facebook' },
-  { Icon: FaWhatsapp,   href: 'https://wa.me/919360959094',                    label: 'WhatsApp' },
+  { Icon: FaWhatsapp,   href: `https://wa.me/${companyInfo.whatsapp}`,         label: 'WhatsApp' },
 ];
 
 export default function Footer() {
@@ -141,16 +142,14 @@ export default function Footer() {
             </h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {[
-                { icon: <HiLocationMarker />, label: 'Address', value: 'Chennai, Tamil Nadu, India' },
-                { icon: <HiPhone />, label: 'Phone', value: '+91 93609 59094' },
-                { icon: <HiPhone />, label: 'Phone', value: '+91 72000 94121' },
-                { icon: <HiMail />, label: 'Email', value: 'info@mskconstruction.in' },
+                { icon: <HiLocationMarker />, label: 'Address', value: companyInfo.address, href: companyInfo.mapUrl },
+                { icon: <HiPhone />, label: 'Phone', value: companyInfo.phone, href: `tel:${companyInfo.phoneHref}` },
               ].map((c, i) => (
                 <div key={i} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
                   <span style={{ color: '#C9A84C', fontSize: '15px', marginTop: '1px', flexShrink: 0 }}>{c.icon}</span>
                   <div>
                     <p style={{ color: 'rgba(255,255,255,0.2)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: '2px', fontFamily: 'Jost, sans-serif' }}>{c.label}</p>
-                    <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '13px', fontWeight: 300, fontFamily: 'Jost, sans-serif' }}>{c.value}</p>
+                    <a href={c.href} target={c.href?.startsWith('http') ? '_blank' : undefined} rel={c.href?.startsWith('http') ? 'noopener noreferrer' : undefined} style={{ color: 'rgba(255,255,255,0.45)', fontSize: '13px', fontWeight: 300, fontFamily: 'Jost, sans-serif', textDecoration: 'none', lineHeight: 1.6 }}>{c.value}</a>
                   </div>
                 </div>
               ))}

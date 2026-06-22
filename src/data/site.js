@@ -85,15 +85,23 @@ export const servicePages = {
   },
 };
 
+export const companyInfo = {
+  name: 'MSK Construction',
+  phone: '09360959094',
+  phoneHref: '+919360959094',
+  whatsapp: '919360959094',
+  address: '51, Madhavan Salai, K K Nagar, Tiruchirappalli, Tamil Nadu 620021',
+  mapUrl: 'https://www.google.com/maps/place/MSK+CONSTRUCTION+(KANAVU+ILLAM+MANAI+)/@10.759149,78.691721,17z/data=!3m1!4b1!4m6!3m5!1s0x3baa8b00691818e3:0xb11dfc5f5e214bd8!8m2!3d10.759149!4d78.691721!16s%2Fg%2F11y0gn35k3?entry=ttu&g_ep=EgoyMDI2MDYxNi4wIKXMDSoASAFQAw%3D%3D',
+  founderPhoto: '/msk-founder.jpeg',
+};
+
 export const teamMembers = [
-  ['Manikandan K V', 'General Manager', 'Strategic vision becomes reality through decisive leadership.'],
-  ['Ar. Rajeswari Bai', 'Principal Architect', 'Iconic structures arise from visionary design.'],
-  ['Kishore D', 'Senior Project Manager', 'Team synergy drives plans into tangible results.'],
-  ['Anudevi J', 'Planning Head', 'Financial soundness shapes viable structural concepts.'],
-  ['Aravind Kumar B', 'Project Manager', 'Client-focused execution delivers reliable project results.'],
-  ['Tharani S', 'Lead Architect', 'Creative precision shapes client ideas into spaces.'],
-  ['Sanjay Kumar S', 'Project Manager', 'Orchestrating timelines with precision and clarity.'],
-  ['Ajith Kumar R', 'Senior Site Engineer', 'Efficient site planning turns timelines into completed builds.'],
+  {
+    name: 'MSK Construction Proprietor',
+    role: 'Founder & Site Lead',
+    quote: 'Personally handling every client discussion, site visit, construction update, and project handover for MSK Construction.',
+    photo: companyInfo.founderPhoto,
+  },
 ];
 
 export const faqs = [
