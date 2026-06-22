@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Navbar from '../Navbar';
@@ -45,8 +45,6 @@ export function PageHero({ eyebrow, title, description, image, current }) {
 }
 
 export function CTASection({ title = 'Ready to Bring Your Vision to Life?', text = 'Get a free consultation with our experts and start your project today.' }) {
-  const navigate = useNavigate();
-
   return (
     <section style={{ background: '#0F0F0F', padding: '30px 24px 90px' }}>
       <div style={{ maxWidth: '1180px', margin: '0 auto', padding: '48px 28px', border: '1px solid rgba(201,168,76,0.16)', background: 'rgba(255,255,255,0.025)', textAlign: 'center' }}>
@@ -56,7 +54,7 @@ export function CTASection({ title = 'Ready to Bring Your Vision to Life?', text
         <button
           type="button"
           className="btn-gold"
-          onClick={() => navigate('/contact')}
+          onClick={() => window.dispatchEvent(new Event('openLeadPopup'))}
           style={{ padding: '14px 34px', fontSize: '12px', letterSpacing: '0.14em', textTransform: 'uppercase' }}
         >
           Contact Us for a Free Consultation

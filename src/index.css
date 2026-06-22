@@ -138,6 +138,22 @@ body  {
   }
 }
 
+@media (max-width: 760px) {
+  .lead-popup {
+    width: calc(100vw - 24px) !important;
+    max-height: calc(100vh - 24px) !important;
+  }
+
+  .lead-popup-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .lead-popup-image {
+    min-height: 170px !important;
+    max-height: 210px !important;
+  }
+}
+
 /* ─── ANIMATIONS ─────────────────────────────── */
 @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
 .floating { animation: float 3s ease-in-out infinite; }

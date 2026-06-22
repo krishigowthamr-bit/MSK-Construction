@@ -10,8 +10,15 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
    href: '#id'    → smooth scroll to section on homepage
 ───────────────────────────────────────── */
 const navItems = [
-  { label: 'Home', href: '/', isRoute: true },
-  { label: 'About', href: '/about', isRoute: true },
+  {
+    label: 'Company',
+    dropdown: [
+      { label: 'About', href: '/about' },
+      { label: 'Team', href: '/team' },
+      { label: 'Career', href: '/career' },
+      { label: 'Vendor Registration', href: '/vendor-registration' },
+    ],
+  },
   {
     label: 'Services',
     dropdown: [
@@ -22,10 +29,27 @@ const navItems = [
     ],
   },
   { label: 'Projects',   href: '/projects', isRoute: true },
-  { label: 'Packages', href: '/packages', isRoute: true },
-  { label: 'Blog', href: '/blog', isRoute: true },
-  { label: 'Team', href: '/team', isRoute: true },
-  { label: 'Contact', href: '/contact' },
+  {
+    label: 'Packages',
+    dropdown: [
+      { label: 'Construction Packages', href: '/packages' },
+      { label: 'Basic Package', href: '/packages' },
+      { label: 'Mid-Range Package', href: '/packages' },
+      { label: 'Premium Package', href: '/packages' },
+      { label: 'Cost Estimator', href: '/services/construction/cost-estimator-chennai' },
+    ],
+  },
+  {
+    label: 'Resources',
+    dropdown: [
+      { label: 'Blog', href: '/blog' },
+      { label: 'FAQ', href: '/contact' },
+      { label: 'Construction Guide', href: '/blog' },
+      { label: 'Google Reviews', href: '/contact' },
+      { label: 'Admin Form', href: '/admin' },
+    ],
+  },
+  { label: 'Contact Us', href: '/contact' },
 ];
 
 /* ─────────────────────────────────────────

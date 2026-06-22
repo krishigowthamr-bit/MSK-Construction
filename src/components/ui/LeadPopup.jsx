@@ -1,248 +1,259 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { HiX } from 'react-icons/hi';
 
-const SERVICES = ['Construction', 'Architecture', 'Interior', 'Renovation'];
-const SESSION_KEY = 'msk_popup_shown';
+const SESSION_KEY = 'msk_consultation_popup_seen';
+
+const initialForm = {
+  name: '',
+  phone: '',
+  email: '',
+  location: '',
+};
 
 export default function LeadPopup() {
-  const [open, setOpen]           = useState(false);
+  const [open, setOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [form, setForm] = useState({ firstName:'', mobile:'', email:'', location:'', service:'', message:'' });
-  const [errors, setErrors]       = useState({});
+  const [form, setForm] = useState(initialForm);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    if (sessionStorage.getItem(SESSION_KEY)) return;
-    const t = setTimeout(() => { setOpen(true); sessionStorage.setItem(SESSION_KEY,'1'); }, 3000);
-    return () => clearTimeout(t);
+    if (typeof window === 'undefined') return undefined;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('lead') === '1') {
+      setOpen(true);
+      return undefined;
+    }
+
+    if (window.sessionStorage.getItem(SESSION_KEY)) return undefined;
+
+    const timer = window.setTimeout(() => {
+      setOpen(true);
+      window.sessionStorage.setItem(SESSION_KEY, '1');
+    }, 1200);
+
+    return () => window.clearTimeout(timer);
   }, []);
 
-  const close = () => setOpen(false);
+  useEffect(() => {
+    const openPopup = () => {
+      setSubmitted(false);
+      setOpen(true);
+    };
 
-  const set = (field, val) => {
-    setForm(f => ({ ...f, [field]: val }));
-    setErrors(e => ({ ...e, [field]: undefined }));
+    window.addEventListener('openLeadPopup', openPopup);
+    return () => window.removeEventListener('openLeadPopup', openPopup);
+  }, []);
+
+  useEffect(() => {
+    if (!open) return undefined;
+
+    const handleKey = (event) => {
+      if (event.key === 'Escape') setOpen(false);
+    };
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', handleKey);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', handleKey);
+    };
+  }, [open]);
+
+  const updateForm = (field, value) => {
+    setForm(current => ({ ...current, [field]: value }));
+    setErrors(current => ({ ...current, [field]: undefined }));
   };
 
   const validate = () => {
-    const e = {};
-    if (!form.firstName.trim())                              e.firstName = 'Required';
-    if (!/^\d{10}$/.test(form.mobile.trim()))               e.mobile    = 'Enter valid 10-digit number';
-    if (!/\S+@\S+\.\S+/.test(form.email))                   e.email     = 'Enter valid email';
-    if (!form.location.trim())                               e.location  = 'Required';
-    if (!form.service)                                       e.service   = 'Please select a service';
-    return e;
+    const nextErrors = {};
+    if (!form.name.trim()) nextErrors.name = 'Name is required';
+    if (!/^\d{10}$/.test(form.phone.trim())) nextErrors.phone = 'Enter a valid 10-digit phone number';
+    if (!/\S+@\S+\.\S+/.test(form.email.trim())) nextErrors.email = 'Enter a valid email';
+    if (!form.location.trim()) nextErrors.location = 'Location is required';
+    return nextErrors;
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const errs = validate();
-    if (Object.keys(errs).length) { setErrors(errs); return; }
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const nextErrors = validate();
+    if (Object.keys(nextErrors).length) {
+      setErrors(nextErrors);
+      return;
+    }
+
     setSubmitted(true);
-    setTimeout(() => { setOpen(false); setSubmitted(false); }, 3200);
+    setTimeout(() => {
+      setSubmitted(false);
+      setOpen(false);
+      setForm(initialForm);
+    }, 2200);
   };
 
-  /* shared styles */
-  const fieldWrap  = { marginBottom: 0 };
-  const lbl        = { display:'block', fontSize:'13px', fontWeight:500, color:'#374151', marginBottom:'6px', fontFamily:'Jost,sans-serif' };
-  const inp = (err) => ({
-    width:'100%', padding:'10px 0', fontSize:'14px', fontFamily:'Jost,sans-serif',
-    color:'#111', background:'transparent', border:'none', outline:'none',
-    borderBottom:`1.5px solid ${err ? '#e53e3e' : '#d1d5db'}`,
-    transition:'border-color .2s', boxSizing:'border-box',
+  const inputStyle = (hasError) => ({
+    width: '100%',
+    height: '40px',
+    border: `1px solid ${hasError ? '#e53e3e' : '#E5E7EB'}`,
+    borderRadius: 0,
+    background: '#fff',
+    color: '#111827',
+    fontFamily: 'Jost, sans-serif',
+    fontSize: '14px',
+    outline: 'none',
+    padding: '0 12px',
+    transition: 'border-color 0.2s, box-shadow 0.2s',
   });
-  const err_txt    = { color:'#e53e3e', fontSize:'11px', marginTop:'3px', fontFamily:'Jost,sans-serif' };
 
   return (
     <AnimatePresence>
       {open && (
         <>
-          {/* backdrop */}
-          <motion.div key="bd"
-            initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}
-            onClick={close}
-            style={{ position:'fixed', inset:0, zIndex:200, background:'rgba(0,0,0,0.55)', backdropFilter:'blur(4px)' }}
+          <motion.div
+            key="consultation-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setOpen(false)}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              zIndex: 200,
+              background: 'rgba(0,0,0,0.62)',
+            }}
           />
 
-          {/* modal */}
-          <motion.div key="modal"
-            initial={{opacity:0, scale:0.92, y:28}}
-            animate={{opacity:1, scale:1, y:0}}
-            exit={{opacity:0, scale:0.92, y:16}}
-            transition={{duration:0.3, ease:[0.22,1,0.36,1]}}
+          <motion.div
+            key="consultation-popup"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="consultation-popup-title"
+            initial={{ opacity: 0, x: '-50%', y: '-46%', scale: 0.96 }}
+            animate={{ opacity: 1, x: '-50%', y: '-50%', scale: 1 }}
+            exit={{ opacity: 0, x: '-50%', y: '-46%', scale: 0.96 }}
+            transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+            className="lead-popup"
             style={{
-              position:'fixed', zIndex:201,
-              top:'50%', left:'50%', transform:'translate(-50%,-50%)',
-              width:'92vw', maxWidth:'620px', maxHeight:'92vh', overflowY:'auto',
-              background:'#fff', borderRadius:'10px',
-              boxShadow:'0 24px 80px rgba(0,0,0,0.35)',
+              position: 'fixed',
+              inset: '50% auto auto 50%',
+              zIndex: 201,
+              width: 'min(896px, calc(100vw - 32px))',
+              maxHeight: 'calc(100vh - 32px)',
+              overflow: 'auto',
+              background: '#fff',
+              boxShadow: '0 28px 90px rgba(0,0,0,0.42)',
             }}
+            onClick={event => event.stopPropagation()}
           >
-            {/* gold top bar */}
-            <div style={{ height:'4px', background:'linear-gradient(90deg,#E8C97A,#C9A84C,#9A7A2E)', borderRadius:'10px 10px 0 0' }} />
-
-            {/* close btn */}
-            <button onClick={close}
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              aria-label="Close"
               style={{
-                position:'absolute', top:'14px', right:'14px',
-                width:'30px', height:'30px', borderRadius:'50%',
-                background:'#C9A84C', border:'none', cursor:'pointer',
-                display:'flex', alignItems:'center', justifyContent:'center',
-                color:'#fff', fontSize:'17px',
-                transition:'background .2s',
+                position: 'absolute',
+                top: '8px',
+                right: '8px',
+                zIndex: 3,
+                width: '38px',
+                height: '38px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                border: 'none',
+                borderRadius: '3px',
+                background: '#414AA3',
+                color: '#fff',
+                cursor: 'pointer',
+                boxShadow: '0 10px 28px rgba(0,0,0,0.22)',
               }}
-              onMouseEnter={e=>e.currentTarget.style.background='#9A7A2E'}
-              onMouseLeave={e=>e.currentTarget.style.background='#C9A84C'}
-            ><HiX /></button>
+            >
+              <HiX style={{ fontSize: '22px' }} />
+            </button>
 
-            <div style={{ padding:'24px 28px 30px' }}>
-              {submitted ? (
-                /* success */
-                <div style={{ textAlign:'center', padding:'28px 0' }}>
-                  <div style={{
-                    width:'60px', height:'60px', borderRadius:'50%',
-                    background:'linear-gradient(135deg,#E8C97A,#C9A84C)',
-                    display:'flex', alignItems:'center', justifyContent:'center',
-                    margin:'0 auto 18px', fontSize:'26px', color:'#fff',
-                  }}>✓</div>
-                  <h3 style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'26px', fontWeight:500, color:'#111', marginBottom:'10px' }}>
-                    Thank You!
-                  </h3>
-                  <p style={{ color:'#666', fontSize:'14px', lineHeight:1.8 }}>
-                    We've received your enquiry.<br/>Our team will reach out within 24 hours.
-                  </p>
-                </div>
-              ) : (
-                <>
-                  {/* header */}
-                  <div style={{ textAlign:'center', marginBottom:'22px' }}>
-                    <img src="/msk-logo.png" alt="MSK Construction"
-                      style={{ height:'48px', width:'auto', objectFit:'contain', marginBottom:'10px', display:'block', margin:'0 auto 10px' }} />
-                    <h2 style={{
-                      fontFamily:'Cormorant Garamond,serif',
-                      fontSize:'clamp(20px,3vw,25px)', fontWeight:600, color:'#111', marginBottom:'5px',
-                    }}>
-                      Start Your Journey with Us!
-                    </h2>
-                    <p style={{ color:'#888', fontSize:'13px' }}>
-                      Get a free consultation from our construction experts
-                    </p>
+            <div className="lead-popup-grid" style={{ display: 'grid', gridTemplateColumns: '1.05fr 1fr' }}>
+              <div className="lead-popup-image" style={{ minHeight: '430px', background: '#111' }}>
+                <img
+                  src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1100&q=85"
+                  alt="Modern luxury home"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                />
+              </div>
+
+              <div style={{ padding: '34px 32px 32px' }}>
+                {submitted ? (
+                  <div style={{ minHeight: '350px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
+                    <div style={{ width: '58px', height: '58px', borderRadius: '50%', background: '#414AA3', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px', marginBottom: '18px' }}>
+                      ✓
+                    </div>
+                    <h2 className="font-display" style={{ color: '#111827', fontSize: '30px', fontWeight: 500, marginBottom: '10px' }}>Thank You</h2>
+                    <p style={{ color: '#4B5563', fontSize: '15px', lineHeight: 1.7 }}>We have received your enquiry. Our team will get back to you shortly.</p>
                   </div>
-
-                  <form onSubmit={handleSubmit} noValidate>
-                    {/* Row 1 */}
-                    <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'20px', marginBottom:'20px' }}>
-                      {/* First Name */}
-                      <div style={fieldWrap}>
-                        <label style={lbl}>First Name</label>
-                        <input type="text" placeholder="Enter your  name"
-                          value={form.firstName} onChange={e=>set('firstName',e.target.value)}
-                          style={inp(errors.firstName)}
-                          onFocus={e=>e.target.style.borderBottomColor='#C9A84C'}
-                          onBlur={e=>e.target.style.borderBottomColor=errors.firstName?'#e53e3e':'#d1d5db'}
-                        />
-                        {errors.firstName && <p style={err_txt}>{errors.firstName}</p>}
-                      </div>
-                      {/* Mobile */}
-                      <div style={fieldWrap}>
-                        <label style={lbl}>Mobile</label>
-                        <div style={{ display:'flex', alignItems:'center', gap:'8px', borderBottom:`1.5px solid ${errors.mobile?'#e53e3e':'#d1d5db'}`, paddingBottom:'10px' }}>
-                          <span style={{fontSize:'18px'}}>🇮🇳</span>
-                          <span style={{color:'#555',fontSize:'14px',fontFamily:'Jost,sans-serif'}}>+91</span>
-                          <input type="tel" placeholder="10-digit number" maxLength={10}
-                            value={form.mobile} onChange={e=>set('mobile',e.target.value.replace(/\D/g,''))}
-                            style={{ flex:1, border:'none', outline:'none', fontSize:'14px', fontFamily:'Jost,sans-serif', color:'#111', background:'transparent' }}
-                          />
-                        </div>
-                        {errors.mobile && <p style={err_txt}>{errors.mobile}</p>}
-                      </div>
-                    </div>
-
-                    {/* Row 2 */}
-                    <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'20px', marginBottom:'20px' }}>
-                      {/* Email */}
-                      <div style={fieldWrap}>
-                        <label style={lbl}>Email</label>
-                        <input type="email" placeholder="Enter your email"
-                          value={form.email} onChange={e=>set('email',e.target.value)}
-                          style={inp(errors.email)}
-                          onFocus={e=>e.target.style.borderBottomColor='#C9A84C'}
-                          onBlur={e=>e.target.style.borderBottomColor=errors.email?'#e53e3e':'#d1d5db'}
-                        />
-                        {errors.email && <p style={err_txt}>{errors.email}</p>}
-                      </div>
-                      {/* Location */}
-                      <div style={fieldWrap}>
-                        <label style={lbl}>Location</label>
-                        <input type="text" placeholder="Enter your Area/City"
-                          value={form.location} onChange={e=>set('location',e.target.value)}
-                          style={inp(errors.location)}
-                          onFocus={e=>e.target.style.borderBottomColor='#C9A84C'}
-                          onBlur={e=>e.target.style.borderBottomColor=errors.location?'#e53e3e':'#d1d5db'}
-                        />
-                        {errors.location && <p style={err_txt}>{errors.location}</p>}
-                      </div>
-                    </div>
-
-                    {/* Service */}
-                    <div style={{ marginBottom:'20px' }}>
-                      <label style={lbl}>Service</label>
-                      <div style={{ display:'flex', flexWrap:'wrap', gap:'20px', marginTop:'6px' }}>
-                        {SERVICES.map(s => (
-                          <label key={s} style={{ display:'flex', alignItems:'center', gap:'7px', cursor:'pointer', fontSize:'14px', color:'#444', fontFamily:'Jost,sans-serif', userSelect:'none' }}>
-                            <input type="radio" name="service" value={s}
-                              checked={form.service===s}
-                              onChange={()=>set('service',s)}
-                              style={{ accentColor:'#C9A84C', width:'16px', height:'16px', cursor:'pointer' }}
-                            />
-                            {s}
-                          </label>
-                        ))}
-                      </div>
-                      {errors.service && <p style={err_txt}>{errors.service}</p>}
-                    </div>
-
-                    {/* Message */}
-                    <div style={{ marginBottom:'24px' }}>
-                      <label style={lbl}>Message</label>
-                      <textarea placeholder="Write your message..." rows={3}
-                        value={form.message} onChange={e=>set('message',e.target.value)}
-                        style={{
-                          width:'100%', padding:'10px 0', fontSize:'14px',
-                          fontFamily:'Jost,sans-serif', color:'#111',
-                          background:'transparent', border:'none',
-                          borderBottom:'1.5px solid #d1d5db', outline:'none',
-                          resize:'none', transition:'border-color .2s', boxSizing:'border-box',
-                        }}
-                        onFocus={e=>e.target.style.borderBottomColor='#C9A84C'}
-                        onBlur={e=>e.target.style.borderBottomColor='#d1d5db'}
-                      />
-                    </div>
-
-                    {/* Submit */}
-                    <button type="submit"
-                      style={{
-                        width:'100%', padding:'15px',
-                        background:'linear-gradient(135deg,#E8C97A,#C9A84C,#9A7A2E)',
-                        color:'#0F0F0F', fontSize:'14px', fontWeight:700,
-                        letterSpacing:'0.1em', textTransform:'uppercase',
-                        border:'none', borderRadius:'5px', cursor:'pointer',
-                        fontFamily:'Jost,sans-serif',
-                        boxShadow:'0 4px 20px rgba(201,168,76,0.35)',
-                        transition:'box-shadow .25s, transform .2s',
-                      }}
-                      onMouseEnter={e=>{e.currentTarget.style.boxShadow='0 8px 28px rgba(201,168,76,0.55)';e.currentTarget.style.transform='translateY(-1px)';}}
-                      onMouseLeave={e=>{e.currentTarget.style.boxShadow='0 4px 20px rgba(201,168,76,0.35)';e.currentTarget.style.transform='translateY(0)';}}
-                    >
-                      Send Message
-                    </button>
-
-                    <p style={{ textAlign:'center', marginTop:'12px', fontSize:'11.5px', color:'#aaa', fontFamily:'Jost,sans-serif' }}>
-                      🔒 Your information is safe with us. No spam, ever.
+                ) : (
+                  <>
+                    <h2 id="consultation-popup-title" style={{ color: '#111827', fontSize: '21px', fontWeight: 700, marginBottom: '10px', fontFamily: 'Jost, sans-serif' }}>
+                      Get a Free Consultation
+                    </h2>
+                    <p style={{ color: '#5B6170', fontSize: '15px', lineHeight: 1.5, marginBottom: '22px' }}>
+                      Fill out the form below and we'll get back to you shortly.
                     </p>
-                  </form>
-                </>
-              )}
+
+                    <form onSubmit={handleSubmit} noValidate>
+                      {[
+                        ['name', 'Name', 'Your name', 'text'],
+                        ['phone', 'Phone', 'Your phone number', 'tel'],
+                        ['email', 'Email', 'your@email.com', 'email'],
+                        ['location', 'Location', 'Your location', 'text'],
+                      ].map(([field, label, placeholder, type]) => (
+                        <div key={field} style={{ marginBottom: '15px' }}>
+                          <label htmlFor={`lead-${field}`} style={{ display: 'block', color: '#111827', fontSize: '14px', fontWeight: 500, marginBottom: '7px', fontFamily: 'Jost, sans-serif' }}>
+                            {label}
+                          </label>
+                          <input
+                            id={`lead-${field}`}
+                            type={type}
+                            inputMode={field === 'phone' ? 'numeric' : undefined}
+                            maxLength={field === 'phone' ? 10 : undefined}
+                            placeholder={placeholder}
+                            value={form[field]}
+                            onChange={event => updateForm(field, field === 'phone' ? event.target.value.replace(/\D/g, '') : event.target.value)}
+                            style={inputStyle(errors[field])}
+                            onFocus={event => {
+                              event.currentTarget.style.borderColor = '#414AA3';
+                              event.currentTarget.style.boxShadow = '0 0 0 3px rgba(65,74,163,0.12)';
+                            }}
+                            onBlur={event => {
+                              event.currentTarget.style.borderColor = errors[field] ? '#e53e3e' : '#E5E7EB';
+                              event.currentTarget.style.boxShadow = 'none';
+                            }}
+                          />
+                          {errors[field] && <p style={{ color: '#e53e3e', fontSize: '11px', marginTop: '4px' }}>{errors[field]}</p>}
+                        </div>
+                      ))}
+
+                      <button
+                        type="submit"
+                        style={{
+                          width: '100%',
+                          height: '38px',
+                          marginTop: '10px',
+                          border: 'none',
+                          borderRadius: '2px',
+                          background: '#414AA3',
+                          color: '#fff',
+                          cursor: 'pointer',
+                          fontFamily: 'Jost, sans-serif',
+                          fontSize: '14px',
+                          fontWeight: 700,
+                          boxShadow: '0 10px 24px rgba(65,74,163,0.24)',
+                        }}
+                      >
+                        Submit
+                      </button>
+                    </form>
+                  </>
+                )}
+              </div>
             </div>
           </motion.div>
         </>

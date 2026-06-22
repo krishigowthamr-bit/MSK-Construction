@@ -105,7 +105,7 @@ export default function Hero() {
             <button
               className="btn-outline"
               style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '12px', letterSpacing: '0.12em', textTransform: 'uppercase', padding: '16px 36px' }}
-              onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+              onClick={() => window.dispatchEvent(new Event('openLeadPopup'))}
             >
               Get Free Consultation
             </button>
