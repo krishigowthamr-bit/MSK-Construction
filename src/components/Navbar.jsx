@@ -47,7 +47,6 @@ const navItems = [
       { label: 'FAQ', href: '/contact' },
       { label: 'Construction Guide', href: '/blog' },
       { label: 'Google Reviews', href: '/contact' },
-      { label: 'Admin Form', href: '/admin' },
     ],
   },
   { label: 'Contact Us', href: '/contact' },

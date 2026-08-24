@@ -24,7 +24,6 @@ const links = {
     { label: 'FAQ', href: '/contact' },
     { label: 'Career', href: '/career' },
     { label: 'Vendor Registration', href: '/vendor-registration' },
-    { label: 'Admin Form', href: '/admin' },
   ],
 };
 
