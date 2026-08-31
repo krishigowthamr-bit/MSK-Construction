@@ -29,8 +29,8 @@ const links = {
 };
 
 const socials = [
-  { Icon: FaInstagram,  href: 'https://www.instagram.com/msk__construction/', label: 'Instagram' },
-  { Icon: FaYoutube,    href: 'https://www.youtube.com/@mskconstruction',      label: 'YouTube' },
+  { Icon: FaInstagram,  href: 'https://www.instagram.com/kanavu_illam_manai', label: 'Instagram' },
+  { Icon: FaYoutube,    href: 'https://www.youtube.com/@kanavuillammanai',      label: 'YouTube' },
   { Icon: FaLinkedinIn, href: 'https://in.linkedin.com/company/mskconstruction', label: 'LinkedIn' },
   { Icon: FaFacebookF,  href: '#',                                              label: 'Facebook' },
   { Icon: FaWhatsapp,   href: `https://wa.me/${companyInfo.whatsapp}`,         label: 'WhatsApp' },

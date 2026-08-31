@@ -242,8 +242,8 @@ export default function Navbar() {
         </div>
         <div style={{ display: 'flex', gap: '14px', alignItems: 'center' }}>
           {[
-            { I: FaInstagram,  h: 'https://www.instagram.com/msk__construction/' },
-            { I: FaYoutube,    h: 'https://www.youtube.com/@mskconstruction' },
+            { I: FaInstagram,  h: 'https://www.instagram.com/kanavu_illam_manai' },
+            { I: FaYoutube,    h: 'https://www.youtube.com/@kanavuillammanai' },
             { I: FaLinkedinIn, h: 'https://in.linkedin.com/company/mskconstruction' },
             { I: FaFacebookF,  h: '#' },
           ].map(({ I, h }, i) => (
@@ -430,8 +430,8 @@ export default function Navbar() {
 
               <div style={{ display: 'flex', gap: '12px', marginTop: '28px' }}>
                 {[
-                  { I: FaInstagram,  h: 'https://www.instagram.com/msk__construction/' },
-                  { I: FaYoutube,    h: 'https://www.youtube.com/@mskconstruction' },
+                  { I: FaInstagram,  h: 'https://www.instagram.com/kanavu_illam_manai' },
+                  { I: FaYoutube,    h: 'https://www.youtube.com/@kanavuillammanai' },
                   { I: FaLinkedinIn, h: 'https://in.linkedin.com/company/mskconstruction' },
                   { I: FaFacebookF,  h: '#' },
                 ].map(({ I, h }, i) => (

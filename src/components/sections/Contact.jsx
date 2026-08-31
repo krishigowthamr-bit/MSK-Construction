@@ -150,6 +150,7 @@ export default function Contact() {
                       <input
                         type="text"
                         placeholder=" "
+                        maxLength={10}
                         value={form.service}
                         onChange={e => setForm({...form, service: e.target.value})}
                       />
